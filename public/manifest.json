@@ -1,0 +1,21 @@
+{
+  "short_name": "Blackboard",
+  "name": "Blackboard",
+  "version": "0.1.0",
+  "manifest_version": 2,
+  "background": {
+    "scripts": ["app/background.js"]
+  },
+  "browser_action": {},
+  "content_scripts" : [
+    {
+      "matches": [ "<all_urls>" ],
+      "css": ["/css/root.css"],
+      "js": ["/static/js/content.js"]
+    }
+  ],
+  "web_accessible_resources":[
+    "/static/css/content.css", "/static/media/*"
+  ],
+  "content_security_policy": "script-src 'self' 'sha256-GgRxrVOKNdB4LrRsVPDSbzvfdV4UqglmviH9GoBJ5jk='; object-src 'self'"
+}
