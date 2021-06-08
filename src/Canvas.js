@@ -1,3 +1,4 @@
+/*global chrome*/
 import React from "react";
 import { Stage, Layer, Line } from "react-konva";
 
@@ -43,9 +44,75 @@ const Canvas = () => {
     return height;
   }
 
+  let originalFixedElements = new Set();
+
+  const handleCapture = () => {
+    let top = document.getElementById('blackboard-canvas').getBoundingClientRect().top + window.pageYOffset;
+    let height = document.getElementById('blackboard-canvas').getBoundingClientRect().height;
+    let n = height / window.innerHeight;
+    let screenshots = [];
+    let canvas = document.createElement('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = height;
+    let context = canvas.getContext('2d');
+    for (let i = 0; i<n; i++) {
+      screenshots[i] = {
+        scrollTo: top,
+      };
+      top = top + window.innerHeight;
+    }
+
+    capture(0,n, screenshots, context);
+    
+    window.setTimeout(() => {
+      chrome.runtime.sendMessage({directive: "save", image: canvas.toDataURL('image/png')}, (captured) => {
+        _cleanup();
+      });
+    },6000);
+    
+}
+
+
+const capture = (j,n,screenshots,context) => {
+  window.scrollTo({top: screenshots[j].scrollTo});
+  window.setTimeout(() => {
+    chrome.runtime.sendMessage({directive: "capture_screenshot"}, (captured) => {
+      let dY = window.scrollY;
+      _getAllFixedElements();
+      if (captured && j<n) {
+          let image = new Image();
+          image.onload = () => {
+            context.drawImage(image, 0, dY, window.innerWidth, window.innerHeight);
+          };
+          image.src = captured;
+          let k = j + 1;
+          capture(k,n,screenshots,context);
+      }
+    });
+    }, 150);
+  }
+
+  const _cleanup = () => {
+    for(let element of originalFixedElements) { 
+      element.style.display = 'block';
+    }
+  }
+  
+  const _getAllFixedElements = () => {
+    let elems = document.body.getElementsByTagName('*');
+    let length = elems.length;
+    for(let i = 0; i < length; i++) { 
+      let elemStyle = window.getComputedStyle(elems[i]);
+      if(elemStyle.getPropertyValue('position') == 'fixed' || elemStyle.getPropertyValue('position') == 'sticky' ) { 
+        elems[i].style.display = 'none';
+        originalFixedElements.add(elems[i]);
+      } 
+    }
+  }
+
   return (
     <div>
-      <div className="canvas">
+      <div className="canvas" id="blackboard-canvas">
       <Stage
         width={window.innerWidth}
         height={calculateHeight()}
@@ -79,6 +146,7 @@ const Canvas = () => {
         <option value="pen">Pen</option>
         <option value="eraser">Eraser</option>
       </select>
+      <button onClick={handleCapture}>Capture</button>
       </div>
     </div>
   );
