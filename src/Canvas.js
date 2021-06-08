@@ -103,7 +103,7 @@ const capture = (j,n,screenshots,context) => {
     let length = elems.length;
     for(let i = 0; i < length; i++) { 
       let elemStyle = window.getComputedStyle(elems[i]);
-      if(elemStyle.getPropertyValue('position') == 'fixed' || elemStyle.getPropertyValue('position') == 'sticky' ) { 
+      if(elemStyle.getPropertyValue('position') === 'fixed' || elemStyle.getPropertyValue('position') === 'sticky' ) { 
         elems[i].style.display = 'none';
         originalFixedElements.add(elems[i]);
       } 
