@@ -9,24 +9,11 @@
     "css-what": "^5.0.1"
   },
   "dependencies": {
-    "@babel/runtime": "^7.10.4",
-    "autoprefixer": "^10.2.6",
-    "case-sensitive-paths-webpack-plugin": "^2.3.0",
-    "chalk": "^4.1.0",
-    "css-loader": "^5.2.6",
-    "dotenv": "^8.2.0",
-    "dotenv-expand": "^5.1.0",
-    "fs-extra": "^9.0.1",
     "konva": "^8.0.2",
-    "postcss-flexbugs-fixes": "^5.0.2",
-    "promise": "8.0.1",
     "prop-types": "^15.7.2",
-    "raf": "3.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-konva": "^17.0.2-4",
-    "resolve": "^1.17.0",
-    "whatwg-fetch": "3.2.0"
+    "react-konva": "^17.0.2-4"
   },
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
@@ -92,6 +79,19 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "resolve": "^1.17.0",
+    "whatwg-fetch": "3.2.0",
+    "raf": "3.4.1",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "promise": "8.0.1",
+    "@babel/runtime": "^7.10.4",
+    "autoprefixer": "^10.2.6",
+    "case-sensitive-paths-webpack-plugin": "^2.3.0",
+    "chalk": "^4.1.0",
+    "css-loader": "^5.2.6",
+    "dotenv": "^8.2.0",
+    "dotenv-expand": "^5.1.0",
+    "fs-extra": "^9.0.1",
     "@babel/core": "^7.10.4",
     "@babel/plugin-transform-runtime": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
