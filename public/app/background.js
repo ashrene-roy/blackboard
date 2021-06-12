@@ -18,9 +18,13 @@ chrome.runtime.onMessage.addListener(
         });
       break;
     case 'save':
-      let popup = window.open();
-      popup.document.write('<img src="'+request.image+'">');
-      sendResponse('');
+      chrome.storage.local.set({image: request.image}, () => {
+        chrome.tabs.create({ url: 'capture.html' }, (tab) => {
+          chrome.tabs.insertCSS(tab.id, {
+            file: "/css/root.css"
+        });
+        });
+      });
       break;
     default:
       // helps debug when request message doesn't match
