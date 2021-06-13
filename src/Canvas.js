@@ -2,6 +2,7 @@
 import React from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
+import Toolbox from './components/Toolbox/Toolbox';
 
 const CanvasBorder = styled.div`
   border: solid 3px limegreen;
@@ -139,17 +140,12 @@ const Canvas = () => {
             ))}
           </Layer>
         </Stage>
-        <select
-          style={{ position: 'absolute', top: '5px', left: '5px' }}
-          value={tool}
-          onChange={(e) => {
-            setTool(e.target.value);
+        <Toolbox
+          handleSetTool={(tool) => {
+            setTool(tool);
           }}
-        >
-          <option value="pen">Pen</option>
-          <option value="eraser">Eraser</option>
-        </select>
-        <button onClick={handleCapture}>Capture</button>
+          handleCapture={handleCapture}
+        ></Toolbox>
       </CanvasBorder>
     </div>
   );
