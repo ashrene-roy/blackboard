@@ -1,7 +1,11 @@
 /*global chrome*/
 import React from 'react';
 import { Stage, Layer, Line } from 'react-konva';
+import styled from 'styled-components';
 
+const CanvasBorder = styled.div`
+  border: solid 3px limegreen;
+`
 const Canvas = () => {
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
@@ -111,7 +115,7 @@ const Canvas = () => {
 
   return (
     <div>
-      <div className="canvas" id="blackboard-canvas-1234">
+      <CanvasBorder id="blackboard-canvas-1234">
         <Stage
           width={window.innerWidth}
           height={calculateHeight()}
@@ -146,7 +150,7 @@ const Canvas = () => {
           <option value="eraser">Eraser</option>
         </select>
         <button onClick={handleCapture}>Capture</button>
-      </div>
+      </CanvasBorder>
     </div>
   );
 };

@@ -1,10 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: sans-serif;
 }
   
-#my-extension-root{
+#blackboard-extension-root-123{
     position: absolute;
     top: 0px;
     right: 0px;
@@ -12,12 +11,4 @@ body {
     left: 0px;
     z-index: 2147483647;
     background:none transparent;
-}
-
-.canvas {
-    border: solid 3px limegreen;
-}
-
-.stage {
-    min-height: 100vh;
 }

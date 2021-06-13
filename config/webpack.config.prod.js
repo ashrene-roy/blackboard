@@ -1,4 +1,4 @@
-'use strict';
+
 
 const autoprefixer = require('autoprefixer');
 const path = require('path');
@@ -59,7 +59,8 @@ module.exports = {
   // In production, we only want to load the polyfills and the app code.
   entry: {
     app: [require.resolve('./polyfills'), paths.appIndexJs],
-    content: [require.resolve('./polyfills'), './src/chrome/content.js']
+    content: [require.resolve('./polyfills'), './src/chrome/content.js'],
+    capture: [require.resolve('./polyfills'), './src/chrome/capture.js'],
   },
   optimization: {
     minimize: false //Update this to true or false
