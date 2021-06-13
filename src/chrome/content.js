@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import Canvas from '../Canvas';
 
 const app = document.createElement('div');
-app.id = 'my-extension-root';
+app.id = 'blackboard-extension-root-123';
 
 document.body.appendChild(app);
 ReactDOM.render(<Canvas/>, app);

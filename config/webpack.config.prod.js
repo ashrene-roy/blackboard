@@ -60,7 +60,7 @@ module.exports = {
   entry: {
     app: [require.resolve('./polyfills'), paths.appIndexJs],
     content: [require.resolve('./polyfills'), './src/chrome/content.js'],
-    capturePageContent: [require.resolve('./polyfills'), './src/chrome/capturePageContent.js']
+    capture: [require.resolve('./polyfills'), './src/chrome/capture.js'],
   },
   optimization: {
     minimize: false //Update this to true or false
