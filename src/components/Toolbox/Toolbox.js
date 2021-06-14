@@ -12,7 +12,7 @@ const Toolbox = (props) => {
 	const Container = styled.div`
 		display: flex;
 		justify-content: flex-end;
-		position: absolute;
+		position: fixed;
 		height: 50px;
 		top: 0;
 		right: 0;
@@ -69,7 +69,7 @@ const Toolbox = (props) => {
 	};
 
   return (
-		<Container>
+		<Container id="blackboard-canvas-1234-toolbox">
 			<CollapseButton onClick={handleCollapse}>{'>'}</CollapseButton>
 			<Tools>
 				<Tool onClick={() => handleSelectedTool('pen')} style={selectedTool === 'pen' ? selected : {}}>

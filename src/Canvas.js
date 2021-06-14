@@ -6,8 +6,10 @@ import Toolbox from './components/Toolbox/Toolbox';
 
 const CanvasBorder = styled.div`
   border: solid 3px limegreen;
-`
+`;
+
 const Canvas = () => {
+
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
   const [height, setHeight] = React.useState(window.innerHeight);
@@ -52,8 +54,11 @@ const Canvas = () => {
   };
 
   const handleCapture = () => {
-    let top = document.getElementById('blackboard-canvas-1234').getBoundingClientRect().top + window.pageYOffset;
-    let height = document.getElementById('blackboard-canvas-1234').getBoundingClientRect().height;
+    let app = document.getElementById('blackboard-canvas-1234');
+    let top = app.getBoundingClientRect().top + window.pageYOffset;
+    let height = app.getBoundingClientRect().height;
+    _hideBlackboardCanvas();
+    
     let n = (height / window.innerHeight);
     let screenshots = [];
     canvas.width = window.innerWidth;
@@ -93,13 +98,18 @@ const Canvas = () => {
           _cleanup();
         });
       }	
-    }, 150);
+    }, 500);
   };
 
   const _cleanup = () => {
-    for(let element of originalFixedElements) { 
-      element.style.display = 'block';
+    for(let item of originalFixedElements) { 
+      item.element.style.position = item.style;
     }
+    let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
+    toolbox.style.display = 'flex';
+    let app = document.getElementById('blackboard-canvas-1234');
+    app.style.border = 'solid 3px limegreen';
+
   };
   
   const _getAllFixedElements = () => {
@@ -108,11 +118,19 @@ const Canvas = () => {
     for(let i = 0; i < length; i++) { 
       let elemStyle = window.getComputedStyle(elems[i]);
       if(elemStyle.getPropertyValue('position') === 'fixed' || elemStyle.getPropertyValue('position') === 'sticky' ) { 
-        elems[i].style.display = 'none';
-        originalFixedElements.add(elems[i]);
+          const originalStyle = elemStyle.getPropertyValue('position');
+          elems[i].style.position = 'absolute';
+          originalFixedElements.add({style: originalStyle, element: elems[i]});
       } 
     }
   };
+
+  const _hideBlackboardCanvas = () => {
+    let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
+    let app = document.getElementById('blackboard-canvas-1234');
+    toolbox.style.display = 'none';
+    app.style.border = 'none';
+  }
 
   return (
     <div>
