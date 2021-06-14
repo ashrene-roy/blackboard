@@ -18,6 +18,7 @@ const Canvas = () => {
 
   let originalFixedElements = new Set();
   let canvas = document.createElement('canvas');
+  let originalOverflowStyle;
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -57,7 +58,7 @@ const Canvas = () => {
     let app = document.getElementById('blackboard-canvas-1234');
     let top = app.getBoundingClientRect().top + window.pageYOffset;
     let height = app.getBoundingClientRect().height;
-    _hideBlackboardCanvas();
+    _prepare();
     
     let n = (height / window.innerHeight);
     let screenshots = [];
@@ -98,7 +99,7 @@ const Canvas = () => {
           _cleanup();
         });
       }	
-    }, 500);
+    }, 300);
   };
 
   const _cleanup = () => {
@@ -109,7 +110,7 @@ const Canvas = () => {
     toolbox.style.display = 'flex';
     let app = document.getElementById('blackboard-canvas-1234');
     app.style.border = 'solid 3px limegreen';
-
+    document.body.style.overflow = originalOverflowStyle;
   };
   
   const _getAllFixedElements = () => {
@@ -125,11 +126,13 @@ const Canvas = () => {
     }
   };
 
-  const _hideBlackboardCanvas = () => {
+  const _prepare = () => {
     let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
     let app = document.getElementById('blackboard-canvas-1234');
     toolbox.style.display = 'none';
     app.style.border = 'none';
+    originalOverflowStyle = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
   }
 
   return (

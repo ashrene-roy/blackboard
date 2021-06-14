@@ -20,6 +20,7 @@ chrome.runtime.onMessage.addListener(
     case 'save':
       chrome.storage.local.set({image: request.image}, () => {
         chrome.tabs.create({ url: 'capture.html' }, (tab) => {
+          sendResponse('done');
         });
       });
       break;
