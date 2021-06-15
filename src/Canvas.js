@@ -8,6 +8,16 @@ const CanvasBorder = styled.div`
   border: solid 3px limegreen;
 `;
 
+const CanvasMain = styled.div`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  z-index: 2147483647;
+  background:none transparent;
+`;
+
 const Canvas = () => {
 
   const [tool, setTool] = React.useState('pen');
@@ -99,7 +109,7 @@ const Canvas = () => {
           _cleanup();
         });
       }	
-    }, 300);
+    }, 400);
   };
 
   const _cleanup = () => {
@@ -136,7 +146,7 @@ const Canvas = () => {
   }
 
   return (
-    <div>
+    <CanvasMain>
       <CanvasBorder id="blackboard-canvas-1234">
         <Stage
           width={window.innerWidth}
@@ -168,7 +178,7 @@ const Canvas = () => {
           handleCapture={handleCapture}
         ></Toolbox>
       </CanvasBorder>
-    </div>
+    </CanvasMain>
   );
 };
 

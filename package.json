@@ -20,7 +20,7 @@
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
+    "build": "INLINE_RUNTIME_CHUNK=false node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "watch": "npm-watch"
   },
