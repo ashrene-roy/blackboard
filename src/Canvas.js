@@ -1,5 +1,5 @@
 /*global chrome*/
-import React from 'react';
+import React, { useRef } from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
 import Toolbox from './components/Toolbox/Toolbox';
@@ -12,7 +12,6 @@ const CanvasMain = styled.div`
   position: absolute;
   top: 0px;
   right: 0px;
-  bottom: 0px;
   left: 0px;
   z-index: 2147483647;
   background:none transparent;
@@ -22,13 +21,23 @@ const Canvas = () => {
 
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
-  const [height, setHeight] = React.useState(window.innerHeight);
+  const [height, setHeight] = React.useState(window.innerHeight + window.scrollY);
+  const heightRef = useRef({});
+  heightRef.current = height;
 
   const isDrawing = React.useRef(false);
 
   let originalFixedElements = new Set();
   let canvas = document.createElement('canvas');
   let originalOverflowStyle;
+
+  React.useEffect(() => { 
+    window.addEventListener('scroll', calculateHeight);
+    const cleanup = () => {
+      window.removeEventListener('scroll', calculateHeight);
+    }
+    return cleanup;
+  });
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -57,11 +66,11 @@ const Canvas = () => {
   };
 
   const calculateHeight = () => {
-    if (window.innerHeight + window.scrollY > height) {
-      setHeight(window.innerHeight + window.scrollY);
-      return window.innerHeight + window.scrollY;
+    let newHeight = window.innerHeight + window.scrollY;
+    // use heightRef instead of height inside window eventlistener of useEffect : https://stackoverflow.com/questions/56511176/state-being-reset
+    if (newHeight > heightRef.current && heightRef.current < 32000) { // MAX canvas length in chrome and firefox os around 32767 pixels
+      setHeight(newHeight);
     }
-    return height;
   };
 
   const handleCapture = () => {
@@ -150,7 +159,7 @@ const Canvas = () => {
       <CanvasBorder id="blackboard-canvas-1234">
         <Stage
           width={window.innerWidth}
-          height={calculateHeight()}
+          height={height}
           onMouseDown={handleMouseDown}
           onMousemove={handleMouseMove}
           onMouseup={handleMouseUp}
