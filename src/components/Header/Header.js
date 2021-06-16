@@ -1,8 +1,8 @@
+/*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
-import {FaShareAlt} from 'react-icons/fa';
-import {BiChalkboard} from 'react-icons/bi';
-import {  FiSave } from 'react-icons/fi';
+import '../../assets/file-download-white.svg';
+import '../../assets/share-white.svg';
 
 const HeaderContent = styled.header`
   background-color: #000000;
@@ -33,8 +33,8 @@ const Button = styled.button`
   border-radius: 5px;
   color: #ffffff;
   border: 1px solid #ffffff;
-  height: 30px;
-  width: 80px;
+  height: 40px;
+  width: 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -44,16 +44,19 @@ const Button = styled.button`
 const ButtonWrapper = styled.div`
   display: flex;
 `
+const Icon = styled.img`
+  height: 20px;
+  width: 20px;
+`;
 
 const Header = (props) => {
 
   return (
       <HeaderContent>
-        <BiChalkboard />
         <Title>{props.title}</Title>
         <ButtonWrapper>
-        <Button onClick={props.handleSave}><p>Save{' '}</p> <FiSave /></Button>
-        <Button><p>Share{' '}</p> <FaShareAlt /></Button>
+        <Button onClick={props.handleSave}><p>Download{' '}</p> <Icon src={chrome.extension.getURL('static/media/file-download-white.svg')} alt="Download" /></Button>
+        <Button><p>Share{' '}</p> <Icon src={chrome.extension.getURL('static/media/share-white.svg')} alt="Share" /></Button>
         </ButtonWrapper>
       </HeaderContent>
   );

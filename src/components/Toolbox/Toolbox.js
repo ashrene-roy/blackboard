@@ -1,8 +1,12 @@
+/*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
-import { BsPencil } from 'react-icons/bs';
-import { BiEraser } from 'react-icons/bi';
-import { AiOutlineCamera } from 'react-icons/ai';
+import '../../assets/pencil-black.svg';
+import '../../assets/eraser-black.svg';
+import '../../assets/camera-black.svg';
+import '../../assets/pencil-white.svg';
+import '../../assets/eraser-white.svg';
+import '../../assets/camera-white.svg';
 
 const Toolbox = (props) => {
 
@@ -39,7 +43,8 @@ const Toolbox = (props) => {
 	`;
 
 	const Tool = styled.button`
-		height: 100%;
+		height: 40px;
+		width: 40px;
 		color: white;
 		background-color: black;
 		border: none;
@@ -47,10 +52,9 @@ const Toolbox = (props) => {
 		padding-bottom: 0;
 		margin-left: 5px;
 		margin-right: 5px;
-		&:hover {
-			background-color: white;
-			color: black;
-		}
+	`;
+
+	const Icon = styled.img`
 	`;
 
 	const handleCollapse = () => {
@@ -65,21 +69,32 @@ const Toolbox = (props) => {
 
 	const selected = {
 		backgroundColor: 'white',
-		color: 'black'
 	};
 
   return (
 		<Container id="blackboard-canvas-1234-toolbox">
 			<CollapseButton onClick={handleCollapse}>{'>'}</CollapseButton>
 			<Tools>
-				<Tool onClick={() => handleSelectedTool('pen')} style={selectedTool === 'pen' ? selected : {}}>
-					<BsPencil size={30}/>
-				</Tool>
-				<Tool onClick={() => handleSelectedTool('eraser')} style={selectedTool === 'eraser' ? selected : {}}>
-					<BiEraser size={30}/>
-				</Tool>
+				{
+					selectedTool === 'pen' ?
+					<Tool onClick={() => handleSelectedTool('pen')} style={selected}>
+						<Icon src={chrome.extension.getURL('static/media/pencil-black.svg')} alt="Pencil" />
+					</Tool> :
+					<Tool onClick={() => handleSelectedTool('pen')}>
+						<Icon src={chrome.extension.getURL('static/media/pencil-white.svg')} alt="Pencil" />
+					</Tool>
+				}
+				{
+					selectedTool === 'eraser' ?
+					<Tool onClick={() => handleSelectedTool('eraser')} style={selected}>
+						<Icon src={chrome.extension.getURL('static/media/eraser-black.svg')} alt="Eraser" />
+					</Tool> :
+					<Tool onClick={() => handleSelectedTool('eraser')}>
+						<Icon src={chrome.extension.getURL('static/media/eraser-white.svg')} alt="Eraser" />
+					</Tool>
+				}
 				<Tool onClick={() => props.handleCapture()}>
-					<AiOutlineCamera size={30}/>
+					<Icon src={chrome.extension.getURL('static/media/camera-white.svg')} alt="Screenshot" />
 				</Tool>
 			</Tools>
 		</Container>
