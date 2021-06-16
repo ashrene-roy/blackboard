@@ -1,5 +1,5 @@
 /*global chrome*/
-import React, { useRef } from 'react';
+import React from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
 import Toolbox from './components/Toolbox/Toolbox';
@@ -21,23 +21,11 @@ const Canvas = () => {
 
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
-  const [height, setHeight] = React.useState(window.innerHeight + window.scrollY);
-  const heightRef = useRef({});
-  heightRef.current = height;
 
   const isDrawing = React.useRef(false);
 
   let originalFixedElements = new Set();
   let canvas = document.createElement('canvas');
-  let originalOverflowStyle;
-
-  React.useEffect(() => { 
-    window.addEventListener('scroll', calculateHeight);
-    const cleanup = () => {
-      window.removeEventListener('scroll', calculateHeight);
-    }
-    return cleanup;
-  });
 
   const handleMouseDown = (e) => {
     isDrawing.current = true;
@@ -65,12 +53,14 @@ const Canvas = () => {
     isDrawing.current = false;
   };
 
-  const calculateHeight = () => {
-    let newHeight = window.innerHeight + window.scrollY;
+  const calculateHeight = (e) => {
+    const bodyHeight = document.documentElement.scrollHeight;
     // use heightRef instead of height inside window eventlistener of useEffect : https://stackoverflow.com/questions/56511176/state-being-reset
-    if (newHeight > heightRef.current && heightRef.current < 32000) { // MAX canvas length in chrome and firefox os around 32767 pixels
-      setHeight(newHeight);
+    // MAX canvas length in chrome and firefox os around 32767 pixels
+    if (bodyHeight < 8000) {
+      return bodyHeight - 10; // Subtract few pixels to avoid extensding body length
     }
+    return 8000;
   };
 
   const handleCapture = () => {
@@ -129,7 +119,6 @@ const Canvas = () => {
     toolbox.style.display = 'flex';
     let app = document.getElementById('blackboard-canvas-1234');
     app.style.border = 'solid 3px limegreen';
-    document.body.style.overflow = originalOverflowStyle;
   };
   
   const _getAllFixedElements = () => {
@@ -150,8 +139,6 @@ const Canvas = () => {
     let app = document.getElementById('blackboard-canvas-1234');
     toolbox.style.display = 'none';
     app.style.border = 'none';
-    originalOverflowStyle = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
   }
 
   return (
@@ -159,7 +146,7 @@ const Canvas = () => {
       <CanvasBorder id="blackboard-canvas-1234">
         <Stage
           width={window.innerWidth}
-          height={height}
+          height={calculateHeight()}
           onMouseDown={handleMouseDown}
           onMousemove={handleMouseMove}
           onMouseup={handleMouseUp}

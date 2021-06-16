@@ -6,7 +6,7 @@
   "background": {
     "scripts": ["app/background.js"]
   },
-  "permissions": [ "activeTab", "tabs", "storage"],
+  "permissions": [ "activeTab", "tabs", "storage", "unlimitedStorage"],
   "browser_action": {},
   "web_accessible_resources":[
     "/static/css/content.css", "/static/media/*"
