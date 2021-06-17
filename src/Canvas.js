@@ -78,7 +78,7 @@ const Canvas = () => {
       screenshots[i] = {
         scrollTo: top,
       };
-      top = top + window.innerHeight;
+      top = top + window.innerHeight - 80; // To handle sticky/fixed headers
     }
 
     capture(0,n, screenshots, context);
@@ -96,6 +96,7 @@ const Canvas = () => {
           _getAllFixedElements();
           let image = new Image();
           image.onload = () => {
+            context.globalCompositeOperation='destination-over';
             context.drawImage(image, 0, dY, window.innerWidth, window.innerHeight);
           };
           image.src = captured;
