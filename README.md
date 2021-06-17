@@ -29,8 +29,8 @@ npm run watch
 
 which listens to any local file changes, and rebuilds automatically.
 
-## Adding React app extension to Chrome
+## Adding Blackboard extension to Chrome
 
 In Chrome browser, go to chrome://extensions page and switch on developer mode. This enables the ability to locally install a Chrome extension.
 
-Now click on the `LOAD UNPACKED` and browse to `blackboard/build` .This will install the React app as a Chrome extension.
+Now click on the `LOAD UNPACKED` and browse to `blackboard/build` .This will install the Blackboard as a Chrome extension.
