@@ -21,6 +21,8 @@ const Canvas = () => {
 
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
+  const [strokeWidth,setStrokeWidth] = React.useState(4);
+  const [colourValue, setColourValue] = React.useState("#df4b26")
 
   const isDrawing = React.useRef(false);
 
@@ -31,7 +33,7 @@ const Canvas = () => {
   const handleMouseDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+    setLines([...lines, { tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: [pos.x, pos.y] }]);
   };
 
   const handleMouseMove = (e) => {
@@ -154,6 +156,18 @@ const Canvas = () => {
     app.style.border = 'none';
   }
 
+  const handlePencilOption = (width) => {
+    setStrokeWidth(width);
+  }
+
+  const handleColourPalette = (colour) => {
+    setColourValue(colour);
+  }
+
+  const handleReset = () => {
+    setLines([]);
+  }
+
   return (
     <CanvasMain>
       <CanvasBorder id="blackboard-canvas-1234">
@@ -169,12 +183,12 @@ const Canvas = () => {
               <Line
                 key={i}
                 points={line.points}
-                stroke="#df4b26"
-                strokeWidth={2}
+                stroke={line.tool.colour}
+                strokeWidth={line.tool.strokeWidth}
                 tension={0.5}
                 lineCap="round"
                 globalCompositeOperation={
-                  line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                  line.tool.name === 'eraser' ? 'destination-out' : 'source-over'
                 }
               />
             ))}
@@ -185,6 +199,11 @@ const Canvas = () => {
             setTool(tool);
           }}
           handleCapture={handleCapture}
+          handlePencilOption={handlePencilOption}
+          handleColourPalette={handleColourPalette}
+          handleReset={handleReset}
+          strokeWidth={strokeWidth}
+          colourValue={colourValue}
         ></Toolbox>
       </CanvasBorder>
     </CanvasMain>
