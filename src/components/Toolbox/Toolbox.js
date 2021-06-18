@@ -75,6 +75,7 @@ const Container = styled.div`
 	`;
 
 	const Label = styled.label`
+		color: #FFFFFF;
 		margin-right: 15px;
 	`;
 
