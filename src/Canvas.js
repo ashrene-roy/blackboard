@@ -4,10 +4,6 @@ import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
 import Toolbox from './components/Toolbox/Toolbox';
 
-const CanvasBorder = styled.div`
-  border: solid 3px limegreen;
-`;
-
 const CanvasMain = styled.div`
   position: absolute;
   top: 0px;
@@ -15,6 +11,9 @@ const CanvasMain = styled.div`
   left: 0px;
   z-index: 2147483647;
   background:none transparent;
+  margin: 0;
+  padding: 0;
+  box-shadow:0px 0px 0px 3px limegreen inset;
 `;
 
 const Canvas = () => {
@@ -169,8 +168,7 @@ const Canvas = () => {
   }
 
   return (
-    <CanvasMain>
-      <CanvasBorder id="blackboard-canvas-1234">
+    <CanvasMain id="blackboard-canvas-1234">
         <Stage
           width={window.innerWidth}
           height={calculateHeight()}
@@ -205,7 +203,6 @@ const Canvas = () => {
           strokeWidth={strokeWidth}
           colourValue={colourValue}
         ></Toolbox>
-      </CanvasBorder>
     </CanvasMain>
   );
 };
