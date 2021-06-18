@@ -7,8 +7,15 @@
     "scripts": ["app/background.js"]
   },
   "permissions": [ "activeTab", "tabs", "storage", "unlimitedStorage"],
-  "browser_action": {},
+  "browser_action": {
+    "default_icon": "icon-48.png"
+  },
   "web_accessible_resources":[
     "/static/css/content.css", "/static/media/*"
-  ]
+  ],
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  }
 }

@@ -24,7 +24,8 @@ const Canvas = () => {
 
   const isDrawing = React.useRef(false);
 
-  let originalFixedElements = new Set();
+  let originalFixedTopElements = new Set();
+  let originalFixedBottomElements = new Set();
   let canvas = document.createElement('canvas');
 
   const handleMouseDown = (e) => {
@@ -69,7 +70,7 @@ const Canvas = () => {
     let height = app.getBoundingClientRect().height;
     _prepare();
     
-    let n = (height / window.innerHeight);
+    let n = (height / (window.innerHeight - 80));
     let screenshots = [];
     canvas.width = window.innerWidth;
     canvas.height = height;
@@ -89,6 +90,7 @@ const Canvas = () => {
   const capture = (j,n,screenshots,context) => {
     let isComplete = (j-n <= 1 && j-n >= 0) ? true : false;
     if (!isComplete) window.scrollTo({top: screenshots[j].scrollTo});
+    _getAllFixedElements();
     window.setTimeout(() => {
       if(!isComplete) {
         chrome.runtime.sendMessage({message: 'capture_screenshot'}, (captured) => {
@@ -113,8 +115,11 @@ const Canvas = () => {
   };
 
   const _cleanup = () => {
-    for(let item of originalFixedElements) { 
+    for(let item of originalFixedTopElements) { 
       item.element.style.position = item.style;
+    }
+    for(let item of originalFixedBottomElements) { 
+      item.element.style.display = item.style;
     }
     let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
     toolbox.style.display = 'flex';
@@ -128,9 +133,16 @@ const Canvas = () => {
     for(let i = 0; i < length; i++) { 
       let elemStyle = window.getComputedStyle(elems[i]);
       if(elemStyle.getPropertyValue('position') === 'fixed' || elemStyle.getPropertyValue('position') === 'sticky' ) { 
-          const originalStyle = elemStyle.getPropertyValue('position');
+        if(elems[i].getBoundingClientRect().top < window.innerHeight/2) {
+          const originalStylePosition = elemStyle.getPropertyValue('position');
           elems[i].style.position = 'absolute';
-          originalFixedElements.add({style: originalStyle, element: elems[i]});
+          originalFixedTopElements.add({style: originalStylePosition, element: elems[i]});
+        } else {
+          const originalStyleDisplay = elemStyle.getPropertyValue('display');
+          elems[i].style.display = 'none';
+          originalFixedBottomElements.add({style: originalStyleDisplay, element: elems[i]});
+        }
+          
       } 
     }
   };

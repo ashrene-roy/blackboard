@@ -34,7 +34,7 @@ const Toolbox = (props) => {
 	const CollapseButton = styled.button`
 		background-color: #000000;
 		width: 15px;
-		border: 2px solid #ffffff;
+		border: 2px solid #17191D;
 		border-radius: 5px;
 		display: flex;
 		align-items: center;
@@ -46,8 +46,9 @@ const Toolbox = (props) => {
 		height: 40px;
 		width: 40px;
 		color: white;
-		background-color: black;
-		border: none;
+		background-color: #17191D;
+		border: 1px solid #26282A;
+		border-radius: 5px;
 		padding-top: 0;
 		padding-bottom: 0;
 		margin-left: 5px;

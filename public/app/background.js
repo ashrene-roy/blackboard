@@ -4,7 +4,12 @@ chrome.browserAction.onClicked.addListener(() => {
   // Send a message to the active tab
   chrome.tabs.query({active: true, currentWindow:true}, (tabs) => {
     let activeTab = tabs[0];
-    chrome.tabs.executeScript(activeTab.id, { file: "static/js/main.js" }, () => {})
+    chrome.tabs.executeScript(activeTab.id, { file: "static/js/main.js" }, () => {
+      if (chrome.runtime.lastError) {
+        alert("Sorry this page is not accessible due to chrome web store policies");
+        return;
+      }
+    })
   });
 });
 

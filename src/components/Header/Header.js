@@ -18,16 +18,27 @@ const HeaderContent = styled.header`
   justify-content: space-between;
   border-bottom: 1px solid black;
 `
-
+const Heading = styled.div`
+  display: flex;
+`;
 const Title = styled.h1`
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  color: #ffffff;
+  color: white;
   font-size: 40px;
   font-weight:bold;
-  -webkit-text-fill-color: black;
-  -webkit-text-stroke-width: 1.5px;
-  -webkit-text-stroke-color: white;
 `
+const Letter = styled.h1`
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: #FFFFFF;
+  font-size: 40px;
+  font-weight:bold;
+  border-radius: 8px;
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  background: linear-gradient(red, blue);
+`
+
 const Button = styled.button`
   background-color: #EDF2F6;
   border-radius: 8px;
@@ -53,7 +64,7 @@ const Header = (props) => {
 
   return (
       <HeaderContent>
-        <Title>{props.title}</Title>
+        <Heading><Letter>B</Letter><Title>lackboard</Title></Heading>
         <ButtonWrapper>
         <Button onClick={props.handleSave}><p>Download{' '}</p> <Icon src={chrome.extension.getURL('static/media/file-download-black.svg')} alt="Download" /></Button>
         {/* <Button><p>Share{' '}</p> <Icon src={chrome.extension.getURL('static/media/share-black.svg')} alt="Share" /></Button> */}
