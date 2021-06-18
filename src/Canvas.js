@@ -13,7 +13,7 @@ const CanvasMain = styled.div`
   background:none transparent;
   margin: 0;
   padding: 0;
-  box-shadow:0px 0px 0px 3px limegreen inset;
+  box-shadow: 0px 0px 0px 3px limegreen inset;
 `;
 
 const Canvas = () => {
@@ -60,7 +60,7 @@ const Canvas = () => {
     // use heightRef instead of height inside window eventlistener of useEffect : https://stackoverflow.com/questions/56511176/state-being-reset
     // MAX canvas length in chrome and firefox os around 32767 pixels
     if (bodyHeight < 8000) {
-      return bodyHeight - 10; // Subtract few pixels to avoid extensding body length
+      return bodyHeight - 5; // Subtract few pixels to avoid extending body length
     }
     return 8000;
   };
@@ -125,7 +125,7 @@ const Canvas = () => {
     let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
     toolbox.style.display = 'flex';
     let app = document.getElementById('blackboard-canvas-1234');
-    app.style.border = 'solid 3px limegreen';
+    app.style.boxShadow = '0px 0px 0px 3px limegreen inset';
   };
   
   const _getAllFixedElements = () => {
@@ -152,7 +152,7 @@ const Canvas = () => {
     let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
     let app = document.getElementById('blackboard-canvas-1234');
     toolbox.style.display = 'none';
-    app.style.border = 'none';
+    app.style.boxShadow = 'none';
   }
 
   const handlePencilOption = (width) => {
