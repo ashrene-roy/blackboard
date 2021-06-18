@@ -4,10 +4,6 @@ import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
 import Toolbox from './components/Toolbox/Toolbox';
 
-const CanvasBorder = styled.div`
-  border: solid 3px limegreen;
-`;
-
 const CanvasMain = styled.div`
   position: absolute;
   top: 0px;
@@ -15,12 +11,17 @@ const CanvasMain = styled.div`
   left: 0px;
   z-index: 2147483647;
   background:none transparent;
+  margin: 0;
+  padding: 0;
+  box-shadow: 0px 0px 0px 3px limegreen inset;
 `;
 
 const Canvas = () => {
 
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
+  const [strokeWidth,setStrokeWidth] = React.useState(4);
+  const [colourValue, setColourValue] = React.useState("#df4b26")
 
   const isDrawing = React.useRef(false);
 
@@ -31,7 +32,7 @@ const Canvas = () => {
   const handleMouseDown = (e) => {
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+    setLines([...lines, { tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: [pos.x, pos.y] }]);
   };
 
   const handleMouseMove = (e) => {
@@ -59,7 +60,7 @@ const Canvas = () => {
     // use heightRef instead of height inside window eventlistener of useEffect : https://stackoverflow.com/questions/56511176/state-being-reset
     // MAX canvas length in chrome and firefox os around 32767 pixels
     if (bodyHeight < 8000) {
-      return bodyHeight - 10; // Subtract few pixels to avoid extensding body length
+      return bodyHeight - 5; // Subtract few pixels to avoid extending body length
     }
     return 8000;
   };
@@ -124,7 +125,7 @@ const Canvas = () => {
     let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
     toolbox.style.display = 'flex';
     let app = document.getElementById('blackboard-canvas-1234');
-    app.style.border = 'solid 3px limegreen';
+    app.style.boxShadow = '0px 0px 0px 3px limegreen inset';
   };
   
   const _getAllFixedElements = () => {
@@ -151,12 +152,23 @@ const Canvas = () => {
     let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
     let app = document.getElementById('blackboard-canvas-1234');
     toolbox.style.display = 'none';
-    app.style.border = 'none';
+    app.style.boxShadow = 'none';
+  }
+
+  const handlePencilOption = (width) => {
+    setStrokeWidth(width);
+  }
+
+  const handleColourPalette = (colour) => {
+    setColourValue(colour);
+  }
+
+  const handleReset = () => {
+    setLines([]);
   }
 
   return (
-    <CanvasMain>
-      <CanvasBorder id="blackboard-canvas-1234">
+    <CanvasMain id="blackboard-canvas-1234">
         <Stage
           width={window.innerWidth}
           height={calculateHeight()}
@@ -169,12 +181,12 @@ const Canvas = () => {
               <Line
                 key={i}
                 points={line.points}
-                stroke="#df4b26"
-                strokeWidth={2}
+                stroke={line.tool.colour}
+                strokeWidth={line.tool.strokeWidth}
                 tension={0.5}
                 lineCap="round"
                 globalCompositeOperation={
-                  line.tool === 'eraser' ? 'destination-out' : 'source-over'
+                  line.tool.name === 'eraser' ? 'destination-out' : 'source-over'
                 }
               />
             ))}
@@ -185,8 +197,12 @@ const Canvas = () => {
             setTool(tool);
           }}
           handleCapture={handleCapture}
+          handlePencilOption={handlePencilOption}
+          handleColourPalette={handleColourPalette}
+          handleReset={handleReset}
+          strokeWidth={strokeWidth}
+          colourValue={colourValue}
         ></Toolbox>
-      </CanvasBorder>
     </CanvasMain>
   );
 };
