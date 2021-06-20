@@ -1,8 +1,10 @@
 /*global chrome*/
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
+import { v4 as uuidv4 } from 'uuid';
 import Toolbox from './components/Toolbox/Toolbox';
+import TextBox from './components/TextBox/TextBox';
 
 const CanvasMain = styled.div`
   position: absolute;
@@ -20,23 +22,58 @@ const Canvas = () => {
 
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
+  const [textBoxes, setTextBoxes] = React.useState([]);
+  const [stack, setStack] = React.useState([]);
   const [strokeWidth,setStrokeWidth] = React.useState(4);
-  const [colourValue, setColourValue] = React.useState("#df4b26")
+  const [colourValue, setColourValue] = React.useState("#df4b26");
 
+  const isStageListening = React.useRef(true);
   const isDrawing = React.useRef(false);
+  const colorRef = React.useRef();
+  const textBoxRef = React.useRef();
+  colorRef.current = colourValue;
+  textBoxRef.current = textBoxes;
 
   let originalFixedTopElements = new Set();
   let originalFixedBottomElements = new Set();
   let canvas = document.createElement('canvas');
 
+  const memoTextBoxEvent = React.useCallback((e) => {
+    let originalTextbox = textBoxRef.current;
+      const textbox = {
+        top: window.scrollY + e.clientY,
+        left: e.clientX,
+        color: colorRef.current,
+        id: `blackboard-${uuidv4()}`
+      }
+      originalTextbox.push(textbox);
+      setTextBoxes(originalTextbox.concat());
+  }, []);
+
+  React.useEffect(() => {
+    if(tool === 'textbox') {
+      isStageListening.current = false;
+      window.addEventListener('dblclick', memoTextBoxEvent, true);
+    } else {
+      isStageListening.current = true;
+      window.removeEventListener('dblclick', memoTextBoxEvent, true);
+    }
+  },[tool])
+
   const handleMouseDown = (e) => {
+    if(!isStageListening.current) {
+      return;
+    }
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: [pos.x, pos.y] }]);
+    setLines([...lines, { action: 'draw', tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: [pos.x, pos.y] }]);
   };
 
   const handleMouseMove = (e) => {
     // no drawing - skipping
+    if(!isStageListening.current) {
+      return;
+    }
     if (!isDrawing.current) {
       return;
     }
@@ -52,6 +89,9 @@ const Canvas = () => {
   };
 
   const handleMouseUp = () => {
+    if(!isStageListening.current) {
+      return;
+    }
     isDrawing.current = false;
   };
 
@@ -164,7 +204,43 @@ const Canvas = () => {
   }
 
   const handleReset = () => {
-    setLines([]);
+    setLines([{action: 'reset', inverse: lines, tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: []}]);
+  }
+
+  const handleUndo = () => {
+    if(lines.length > 0) {
+      let originalState = lines;
+      const poppedLine = originalState.pop();
+      if(poppedLine.action === 'draw') {
+        setLines(originalState); 
+      }
+      if(poppedLine.action === 'reset') {
+        setLines(poppedLine.inverse); 
+      }
+      setStack([...stack, poppedLine]);
+    }
+    
+  }
+
+  const handleRedo = () => {
+    if(stack.length > 0) {
+      let originalState = stack;
+      const poppedLine = originalState.pop();
+      if(poppedLine.action === 'draw') {
+        setLines([...lines, poppedLine]); 
+      }
+      if(poppedLine.action === 'reset') {
+        handleReset();
+      }
+      setStack(originalState);
+    }
+  }
+
+  const handleTextboxDelete = (id) => {
+    let updatedTextboxList = textBoxes.filter((textbox) => {
+      return textbox.id === id ? false : true;
+    });
+    setTextBoxes(updatedTextboxList);
   }
 
   return (
@@ -200,9 +276,24 @@ const Canvas = () => {
           handlePencilOption={handlePencilOption}
           handleColourPalette={handleColourPalette}
           handleReset={handleReset}
+          handleUndo={handleUndo}
+          handleRedo={handleRedo}
           strokeWidth={strokeWidth}
           colourValue={colourValue}
         ></Toolbox>
+        {
+          textBoxes.map((textbox) => (
+            <TextBox 
+              id={textbox.id}
+              key={textbox.id}
+              top={textbox.top}
+              left={textbox.left}
+              color={textbox.color}
+              disabled={!isStageListening.current}
+              handleTextboxDelete={() => handleTextboxDelete(textbox.id)}
+            />
+          ))
+        }
     </CanvasMain>
   );
 };

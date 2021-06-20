@@ -7,9 +7,13 @@ import '../../assets/camera-black.svg';
 import '../../assets/pencil-white.svg';
 import '../../assets/eraser-white.svg';
 import '../../assets/camera-white.svg';
+import '../../assets/text-tool-white.svg';
+import '../../assets/text-tool-black.svg';
+import '../../assets/undo-arrow-white.svg';
+import '../../assets/redo-arrow-white.svg';
 import '../../assets/recycle-bin-white.svg';
 
-const Container = styled.div`
+	const Container = styled.div`
 		display: flex;
 		position: fixed;
 		top: 0;
@@ -24,7 +28,7 @@ const Container = styled.div`
 		flex-wrap: wrap;
 		background-color: #000000;
 		align-items: center;
-		width: 300px;
+		width: 430px;
 	`;
 
 	const CollapseButton = styled.button`
@@ -57,7 +61,7 @@ const Container = styled.div`
 	const StrokeOption = styled.div`
 		display: flex;
 		justify-content: space-between;
-		width: 300px;
+		width: 380px;
 		margin-left: 10px;
 		margin-top: 20px;
 		margin-bottom: 20px;
@@ -71,7 +75,9 @@ const Container = styled.div`
 		height: 40px;
 		width: 40px;
 		margin-left: 5px;
+		margin-right: 5px;
 		border: none;
+		padding: 0;
 	`;
 
 	const Label = styled.label`
@@ -81,7 +87,7 @@ const Container = styled.div`
 
 const Toolbox = (props) => {
 
-	const [selectedTool, setSelectedTool] = React.useState('');
+	const [selectedTool, setSelectedTool] = React.useState('pen');
 	const [isCollapse, setCollapse] = React.useState(false);
 
 	const handleCollapse = () => {
@@ -102,6 +108,12 @@ const Toolbox = (props) => {
 		props.handleColourPalette(e.target.value);
 	}
 
+	const handleTextbox = (tool, isSelected) => {
+		setSelectedTool(tool);
+		props.handleSetTool(tool);
+		// props.handleTextbox(isSelected);
+	}
+
 	const selected = {
 		backgroundColor: 'white',
 	};
@@ -110,6 +122,12 @@ const Toolbox = (props) => {
 		<Container id="blackboard-canvas-1234-toolbox">
 			<CollapseButton onClick={handleCollapse}>{'>'}</CollapseButton>
 			<Tools isCollapse={isCollapse}>
+				<Tool onClick={() => props.handleUndo()}>
+					<Icon src={chrome.extension.getURL('static/media/undo-arrow-white.svg')} alt="Undo" />
+				</Tool>
+				<Tool onClick={() => props.handleRedo()}>
+					<Icon src={chrome.extension.getURL('static/media/redo-arrow-white.svg')} alt="Redo" />
+				</Tool>
 				{
 					selectedTool === 'pen' ?
 					<Tool onClick={() => handleSelectedTool('pen')} style={selected}>
@@ -122,11 +140,20 @@ const Toolbox = (props) => {
 				<ColourPalette type='color' value={props.colourValue} onChange={handleColourPalette} />
 				{
 					selectedTool === 'eraser' ?
-					<Tool onClick={() => handleSelectedTool('eraser')} style={selected}>
+					<Tool onClick={() => handleSelectedTool('pen')} style={selected}>
 						<Icon src={chrome.extension.getURL('static/media/eraser-black.svg')} alt="Eraser" />
 					</Tool> :
 					<Tool onClick={() => handleSelectedTool('eraser')}>
 						<Icon src={chrome.extension.getURL('static/media/eraser-white.svg')} alt="Eraser" />
+					</Tool>
+				}
+				{
+					selectedTool === 'textbox' ?
+					<Tool onClick={() => handleTextbox('pen', true)} style={selected}>
+						<Icon src={chrome.extension.getURL('static/media/text-tool-black.svg')} alt="Text" />
+					</Tool> :
+					<Tool onClick={() => handleTextbox('textbox', false)}>
+						<Icon src={chrome.extension.getURL('static/media/text-tool-white.svg')} alt="Text" />
 					</Tool>
 				}
 				<Tool onClick={() => props.handleCapture()}>
@@ -137,7 +164,7 @@ const Toolbox = (props) => {
 				</Tool>
 				<StrokeOption>
 					<Label>Size:</Label>
-					<Slider type='range' min={3} max={80} value={props.strokeWidth} onChange={handleslider} />
+					<Slider type='range' min={3} max={100} value={props.strokeWidth} onChange={handleslider} />
 				</StrokeOption>
 			</Tools>
 		</Container>

@@ -11,7 +11,7 @@
     "default_icon": "icon-48.png"
   },
   "web_accessible_resources":[
-    "/static/css/content.css", "/static/media/*"
+    "favicon.ico", "/static/media/*"
   ],
   "icons": {
     "16": "icon-16.png",
