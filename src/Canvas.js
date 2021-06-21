@@ -39,10 +39,12 @@ const Canvas = () => {
   const textBoxRef = React.useRef();
   const lineRef = React.useRef();
   const undoStackRef = React.useRef();
+  const strokeWidthRef = React.useRef();
   lineRef.current = lines;
   textBoxRef.current = textBoxes;
   colorRef.current = colourValue;
   undoStackRef.current = undoStack;
+  strokeWidthRef.current = strokeWidth;
 
   let originalFixedTopElements = new Set();
   let originalFixedBottomElements = new Set();
@@ -54,7 +56,8 @@ const Canvas = () => {
         top: window.scrollY + e.clientY,
         left: e.clientX,
         color: colorRef.current,
-        id: `blackboard-${uuidv4()}`
+        id: `blackboard-${uuidv4()}`,
+        fontSize: strokeWidthRef.current
       }
       originalTextbox.push(textbox);
       _push_to_stack(ACTIONS.CREATE_TEXTBOX, textbox);
@@ -208,8 +211,8 @@ const Canvas = () => {
     setStrokeWidth(width);
   }
 
-  const handleColourPalette = (colour) => {
-    setColourValue(colour);
+  const handleColourPalette = (value) => {
+    setColourValue(value);
   }
 
   // Erase all event
@@ -366,6 +369,7 @@ const Canvas = () => {
               left={textbox.left}
               color={textbox.color}
               text={textbox.text}
+              fontSize={textbox.fontSize}
               disabled={!isStageListening.current}
               handleTextboxDelete={() => handleTextboxDelete(textbox.id)}
               handleTextChange={handleTextChange}

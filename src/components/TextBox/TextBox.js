@@ -6,6 +6,7 @@ import '../../assets/recycle-bin.svg';
 
 const Textarea = styled.textarea`
   color: ${props => props.color} !important;
+  font-size: ${props => Math.max(14, props.fontSize)}px !important;
   min-width: 300px;
   background: none !important;
   border: none !important;
@@ -60,6 +61,7 @@ const TextBox = (props) => {
       <Draggable disabled={props.disabled}>
         <Container top={props.top} left={props.left}>
             <Textarea
+                fontSize={props.fontSize}
                 onChange={(e) => props.handleTextChange(props.id, e.target.value)}
                 color={props.color}
             >{props.text}</Textarea>
