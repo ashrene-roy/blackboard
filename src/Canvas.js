@@ -32,6 +32,8 @@ const Canvas = () => {
 
   const [undoStack, setUndoStack] = React.useState([]);
   const [redoStack, setRedoStack] = React.useState([]);
+  const [undoEvent, setUndoEvent] = React.useState({});
+  const [redoEvent, setRedoEvent] = React.useState({});
 
   const isStageListening = React.useRef(true);
   const isDrawing = React.useRef(false);
@@ -78,6 +80,76 @@ const Canvas = () => {
     undoStack.length > 0 ? setUndoDisabled(false) : setUndoDisabled(true);
     redoStack.length > 0 ? setRedoDisabled(false) : setRedoDisabled(true);
   },[undoStack,redoStack]);
+
+  //Hook to handle undo event
+  React.useEffect(() => {
+    const length = undoStack.length;
+    const stack = undoStack.slice(0, length - 1);
+    setUndoStack(stack);
+    if(undoEvent.action === ACTIONS.CREATE_LINE) {
+      let originalLines = lines;
+      originalLines.pop();
+      setLines(originalLines);
+    }
+    if(undoEvent.action === ACTIONS.CREATE_TEXTBOX) {
+      let originalTextboxes = textBoxes;
+      originalTextboxes.pop();
+      setTextBoxes(originalTextboxes);
+    }
+    if(undoEvent.action === ACTIONS.DELETE_TEXTBOX) {
+      let originalTextboxes = textBoxes;
+      originalTextboxes.push(undoEvent.data);
+      setTextBoxes(originalTextboxes);
+    }
+    if(undoEvent.action === ACTIONS.RESET) {
+      setLines(undoEvent.data.lines);
+      setTextBoxes(undoEvent.data.textBoxes);
+    }
+  },[undoEvent]);
+
+  //Hook to handle redo event
+  React.useEffect(() => {
+    const length = redoStack.length;
+    const stack = redoStack.slice(0, length - 1);
+    setRedoStack(stack);
+    if(redoEvent.action === ACTIONS.CREATE_LINE) {
+      let originalLines = lines;
+      originalLines.push(redoEvent.data);
+      setLines(originalLines);
+    }
+    if(redoEvent.action === ACTIONS.CREATE_TEXTBOX) {
+      let originalTextboxes = textBoxes;
+      originalTextboxes.push(redoEvent.data);
+      setTextBoxes(originalTextboxes);
+    }
+    if(redoEvent.action === ACTIONS.DELETE_TEXTBOX) {
+      let originalTextboxes = textBoxes;
+      originalTextboxes.pop();
+      setTextBoxes(originalTextboxes);
+    }
+    if(redoEvent.action === ACTIONS.RESET) {
+      setLines([]);
+      setTextBoxes([]);
+    }
+  },[redoEvent]);
+
+  const handleUndo = () => {
+    if(undoStack.length > 0) {
+      const length = undoStack.length;
+      const event = undoStack[length - 1];
+      setRedoStack([...redoStack, event]);
+      setUndoEvent(event);
+    }
+  }
+
+  const handleRedo = () => {
+    if(redoStack.length > 0) {
+      const length = redoStack.length;
+      const event = redoStack[length - 1];
+      setUndoStack([...undoStack, event]);
+      setRedoEvent(event);
+    }
+  }
 
   // Line drawing events
   const handleMouseDown = (e) => {
@@ -223,60 +295,6 @@ const Canvas = () => {
 
   }
 
-  const handleUndo = () => {
-    if(undoStack.length > 0) {
-      let stack = undoStack;
-      const event = stack.pop();
-      if(event.action === ACTIONS.CREATE_LINE) {
-        let originalLines = lines;
-        originalLines.pop();
-        setLines(originalLines.concat());
-      }
-      if(event.action === ACTIONS.CREATE_TEXTBOX) {
-        let originalTextboxes = textBoxes;
-        originalTextboxes.pop();
-        setTextBoxes(originalTextboxes.concat());
-      }
-      if(event.action === ACTIONS.DELETE_TEXTBOX) {
-        let originalTextboxes = textBoxes;
-        originalTextboxes.push(event.data);
-        setTextBoxes(originalTextboxes.concat());
-      }
-      if(event.action === ACTIONS.RESET) {
-        setLines(event.data.lines.concat());
-        setTextBoxes(event.data.textBoxes.concat());
-      }
-      setRedoStack([...redoStack, event]);
-    }
-  }
-
-  const handleRedo = () => {
-    if(redoStack.length > 0) {
-      let stack = redoStack;
-      const event = stack.pop();
-      if(event.action === ACTIONS.CREATE_LINE) {
-        let originalLines = lines;
-        originalLines.push(event.data);
-        setLines(originalLines.concat());
-      }
-      if(event.action === ACTIONS.CREATE_TEXTBOX) {
-        let originalTextboxes = textBoxes;
-        originalTextboxes.push(event.data);
-        setTextBoxes(originalTextboxes.concat());
-      }
-      if(event.action === ACTIONS.DELETE_TEXTBOX) {
-        let originalTextboxes = textBoxes;
-        originalTextboxes.pop();
-        setTextBoxes(originalTextboxes.concat());
-      }
-      if(event.action === ACTIONS.RESET) {
-        setLines([].concat());
-        setTextBoxes([].concat());
-      }
-      setUndoStack([...undoStack, event]);
-    }
-  }
-
   // Textbox events
   const handleTextboxDelete = (id) => {
     let updatedTextboxList = textBoxes.filter((textbox) => {
@@ -344,22 +362,6 @@ const Canvas = () => {
             ))}
           </Layer>
         </Stage>
-        <Toolbox
-          handleSetTool={(tool) => {
-            setTool(tool);
-          }}
-          tool={tool}
-          handleCapture={handleCapture}
-          handlePencilOption={handlePencilOption}
-          handleColourPalette={handleColourPalette}
-          handleReset={handleReset}
-          handleUndo={handleUndo}
-          handleRedo={handleRedo}
-          strokeWidth={strokeWidth}
-          colourValue={colourValue}
-          isUndoDisabled={isUndoDisabled}
-          isRedoDisabled={isRedoDisabled}
-        ></Toolbox>
         {
           textBoxes.map((textbox) => (
             <TextBox 
@@ -376,6 +378,23 @@ const Canvas = () => {
             />
           ))
         }
+        <Toolbox
+          handleSetTool={(tool) => {
+            setTool(tool);
+          }}
+          tool={tool}
+          handleCapture={handleCapture}
+          handlePencilOption={handlePencilOption}
+          handleColourPalette={handleColourPalette}
+          handleReset={handleReset}
+          handleUndo={handleUndo}
+          handleRedo={handleRedo}
+          strokeWidth={strokeWidth}
+          colourValue={colourValue}
+          isUndoDisabled={isUndoDisabled}
+          isRedoDisabled={isRedoDisabled}
+        ></Toolbox>
+        
     </CanvasMain>
   );
 };
