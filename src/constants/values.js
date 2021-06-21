@@ -1,0 +1,17 @@
+export const TOOLBOX = {
+    PEN: "PEN",
+    ERASER: "ERASER",
+    TEXTBOX: "TEXTBOX",
+    RESET: "RESET",
+    UNDO: "UNDO",
+    REDO: "REDO",
+    COLOUR: "COLOUR",
+    CAPTURE: "CAPTURE"
+};
+
+export const ACTIONS = {
+    CREATE_LINE: "CREATE_LINE",
+    CREATE_TEXTBOX: "CREATE_TEXTBOX",
+    DELETE_TEXTBOX: "DELETE_TEXTBOX",
+    RESET: "RESET"
+}

@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import Toolbox from './components/Toolbox/Toolbox';
 import TextBox from './components/TextBox/TextBox';
+import { TOOLBOX, ACTIONS } from './constants/values';
+import { DEFAULT_TOOL_COLOUR } from './constants/theme';
 
 const CanvasMain = styled.div`
   position: absolute;
@@ -20,23 +22,23 @@ const CanvasMain = styled.div`
 
 const Canvas = () => {
 
-  const [tool, setTool] = React.useState('pen');
+  const [tool, setTool] = React.useState(TOOLBOX.PEN);
   const [lines, setLines] = React.useState([]);
   const [textBoxes, setTextBoxes] = React.useState([]);
   const [strokeWidth,setStrokeWidth] = React.useState(4);
-  const [colourValue, setColourValue] = React.useState("#df4b26");
+  const [colourValue, setColourValue] = React.useState(DEFAULT_TOOL_COLOUR);
   const [isUndoDisabled, setUndoDisabled] = React.useState(false);
   const [isRedoDisabled, setRedoDisabled] = React.useState(false);
 
   const [undoStack, setUndoStack] = React.useState([]);
   const [redoStack, setRedoStack] = React.useState([]);
 
-  const undoStackRef = React.useRef();
   const isStageListening = React.useRef(true);
   const isDrawing = React.useRef(false);
   const colorRef = React.useRef();
   const textBoxRef = React.useRef();
   const lineRef = React.useRef();
+  const undoStackRef = React.useRef();
   lineRef.current = lines;
   textBoxRef.current = textBoxes;
   colorRef.current = colourValue;
@@ -55,12 +57,12 @@ const Canvas = () => {
         id: `blackboard-${uuidv4()}`
       }
       originalTextbox.push(textbox);
-      _push_to_stack('create_textbox',textbox);
+      _push_to_stack(ACTIONS.CREATE_TEXTBOX, textbox);
       setTextBoxes(originalTextbox.concat());
   }, []);
 
   React.useEffect(() => {
-    if(tool === 'textbox') {
+    if(tool === TOOLBOX.TEXTBOX) {
       isStageListening.current = false;
       window.addEventListener('dblclick', memoTextBoxEvent, true);
     } else {
@@ -81,7 +83,7 @@ const Canvas = () => {
     }
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
-    setLines([...lines, { action: 'draw', tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: [pos.x, pos.y] }]);
+    setLines([...lines, { tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: [pos.x, pos.y] }]);
   };
 
   const handleMouseMove = (e) => {
@@ -107,7 +109,7 @@ const Canvas = () => {
     if(!isStageListening.current) {
       return;
     }
-    _push_to_stack('create_line', lineRef.current[lineRef.current.length - 1]);
+    _push_to_stack(ACTIONS.CREATE_LINE, lineRef.current[lineRef.current.length - 1]);
     isDrawing.current = false;
   };
 
@@ -212,7 +214,7 @@ const Canvas = () => {
 
   // Erase all event
   const handleReset = () => {
-    _push_to_stack('reset', {lines, textBoxes});
+    _push_to_stack(ACTIONS.RESET, {lines, textBoxes});
     setLines([]);
     setTextBoxes([]);
 
@@ -222,23 +224,22 @@ const Canvas = () => {
     if(undoStack.length > 0) {
       let stack = undoStack;
       const event = stack.pop();
-      alert(JSON.stringify(event))
-      if(event.action === 'create_line') {
+      if(event.action === ACTIONS.CREATE_LINE) {
         let originalLines = lines;
         originalLines.pop();
         setLines(originalLines.concat());
       }
-      if(event.action === 'create_textbox') {
+      if(event.action === ACTIONS.CREATE_TEXTBOX) {
         let originalTextboxes = textBoxes;
         originalTextboxes.pop();
         setTextBoxes(originalTextboxes.concat());
       }
-      if(event.action === 'delete_textbox') {
+      if(event.action === ACTIONS.DELETE_TEXTBOX) {
         let originalTextboxes = textBoxes;
         originalTextboxes.push(event.data);
         setTextBoxes(originalTextboxes.concat());
       }
-      if(event.action === 'reset') {
+      if(event.action === ACTIONS.RESET) {
         setLines(event.data.lines.concat());
         setTextBoxes(event.data.textBoxes.concat());
       }
@@ -250,23 +251,22 @@ const Canvas = () => {
     if(redoStack.length > 0) {
       let stack = redoStack;
       const event = stack.pop();
-      alert(JSON.stringify(event))
-      if(event.action === 'create_line') {
+      if(event.action === ACTIONS.CREATE_LINE) {
         let originalLines = lines;
         originalLines.push(event.data);
         setLines(originalLines.concat());
       }
-      if(event.action === 'create_textbox') {
+      if(event.action === ACTIONS.CREATE_TEXTBOX) {
         let originalTextboxes = textBoxes;
         originalTextboxes.push(event.data);
         setTextBoxes(originalTextboxes.concat());
       }
-      if(event.action === 'delete_textbox') {
+      if(event.action === ACTIONS.DELETE_TEXTBOX) {
         let originalTextboxes = textBoxes;
         originalTextboxes.pop();
         setTextBoxes(originalTextboxes.concat());
       }
-      if(event.action === 'reset') {
+      if(event.action === ACTIONS.RESET) {
         setLines([].concat());
         setTextBoxes([].concat());
       }
@@ -278,7 +278,7 @@ const Canvas = () => {
   const handleTextboxDelete = (id) => {
     let updatedTextboxList = textBoxes.filter((textbox) => {
       if(textbox.id === id) {
-        _push_to_stack('delete_textbox',textbox);
+        _push_to_stack(ACTIONS.DELETE_TEXTBOX,textbox);
         return false;
       }
       return true;
@@ -335,7 +335,7 @@ const Canvas = () => {
                 tension={0.5}
                 lineCap="round"
                 globalCompositeOperation={
-                  line.tool.name === 'eraser' ? 'destination-out' : 'source-over'
+                  line.tool.name === TOOLBOX.ERASER ? 'destination-out' : 'source-over'
                 }
               />
             ))}
@@ -345,6 +345,7 @@ const Canvas = () => {
           handleSetTool={(tool) => {
             setTool(tool);
           }}
+          tool={tool}
           handleCapture={handleCapture}
           handlePencilOption={handlePencilOption}
           handleColourPalette={handleColourPalette}

@@ -1,6 +1,7 @@
 /*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
+import { TOOLBOX } from '../../constants/values';
 import '../../assets/pencil-black.svg';
 import '../../assets/eraser-black.svg';
 import '../../assets/camera-black.svg';
@@ -89,7 +90,7 @@ import '../../assets/recycle-bin-white.svg';
 
 const Toolbox = (props) => {
 
-	const [selectedTool, setSelectedTool] = React.useState('pen');
+	const [selectedTool, setSelectedTool] = React.useState(props.tool);
 	const [isCollapse, setCollapse] = React.useState(false);
 
 	const handleCollapse = () => {
@@ -136,30 +137,30 @@ const Toolbox = (props) => {
 					}
 				</Tool>
 				{
-					selectedTool === 'pen' ?
-					<Tool onClick={() => handleSelectedTool('pen')} style={selected}>
+					selectedTool === TOOLBOX.PEN ?
+					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)} style={selected}>
 						<Icon src={chrome.extension.getURL('static/media/pencil-black.svg')} alt="Pencil" />
 					</Tool> :
-					<Tool onClick={() => handleSelectedTool('pen')}>
+					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)}>
 						<Icon src={chrome.extension.getURL('static/media/pencil-white.svg')} alt="Pencil" />
 					</Tool>
 				}
 				<ColourPalette type='color' value={props.colourValue} onChange={handleColourPalette} />
 				{
-					selectedTool === 'eraser' ?
-					<Tool onClick={() => handleSelectedTool('pen')} style={selected}>
+					selectedTool === TOOLBOX.ERASER ?
+					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)} style={selected}>
 						<Icon src={chrome.extension.getURL('static/media/eraser-black.svg')} alt="Eraser" />
 					</Tool> :
-					<Tool onClick={() => handleSelectedTool('eraser')}>
+					<Tool onClick={() => handleSelectedTool(TOOLBOX.ERASER)}>
 						<Icon src={chrome.extension.getURL('static/media/eraser-white.svg')} alt="Eraser" />
 					</Tool>
 				}
 				{
-					selectedTool === 'textbox' ?
-					<Tool onClick={() => handleTextbox('pen', true)} style={selected}>
+					selectedTool === TOOLBOX.TEXTBOX ?
+					<Tool onClick={() => handleTextbox(TOOLBOX.PEN, true)} style={selected}>
 						<Icon src={chrome.extension.getURL('static/media/text-tool-black.svg')} alt="Text" />
 					</Tool> :
-					<Tool onClick={() => handleTextbox('textbox', false)}>
+					<Tool onClick={() => handleTextbox(TOOLBOX.TEXTBOX, false)}>
 						<Icon src={chrome.extension.getURL('static/media/text-tool-white.svg')} alt="Text" />
 					</Tool>
 				}
