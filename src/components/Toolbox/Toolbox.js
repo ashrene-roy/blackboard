@@ -11,6 +11,8 @@ import '../../assets/text-tool-white.svg';
 import '../../assets/text-tool-black.svg';
 import '../../assets/undo-arrow-white.svg';
 import '../../assets/redo-arrow-white.svg';
+import '../../assets/undo-arrow-grey.svg';
+import '../../assets/redo-arrow-grey.svg';
 import '../../assets/recycle-bin-white.svg';
 
 	const Container = styled.div`
@@ -108,10 +110,9 @@ const Toolbox = (props) => {
 		props.handleColourPalette(e.target.value);
 	}
 
-	const handleTextbox = (tool, isSelected) => {
+	const handleTextbox = (tool) => {
 		setSelectedTool(tool);
 		props.handleSetTool(tool);
-		// props.handleTextbox(isSelected);
 	}
 
 	const selected = {
@@ -122,11 +123,17 @@ const Toolbox = (props) => {
 		<Container id="blackboard-canvas-1234-toolbox">
 			<CollapseButton onClick={handleCollapse}>{'>'}</CollapseButton>
 			<Tools isCollapse={isCollapse}>
-				<Tool onClick={() => props.handleUndo()}>
-					<Icon src={chrome.extension.getURL('static/media/undo-arrow-white.svg')} alt="Undo" />
+				<Tool onClick={() => props.handleUndo()} disabled={props.isUndoDisabled}>
+					{
+						props.isUndoDisabled ? <Icon src={chrome.extension.getURL('static/media/undo-arrow-grey.svg')} alt="Undo" /> :
+						<Icon src={chrome.extension.getURL('static/media/undo-arrow-white.svg')} alt="Undo" />
+  					}
 				</Tool>
-				<Tool onClick={() => props.handleRedo()}>
-					<Icon src={chrome.extension.getURL('static/media/redo-arrow-white.svg')} alt="Redo" />
+				<Tool onClick={() => props.handleRedo()} disabled={props.isRedoDisabled}>
+					{
+						props.isRedoDisabled ? <Icon src={chrome.extension.getURL('static/media/redo-arrow-grey.svg')} alt="Redo" /> :
+						<Icon src={chrome.extension.getURL('static/media/redo-arrow-white.svg')} alt="Redo" />
+					}
 				</Tool>
 				{
 					selectedTool === 'pen' ?

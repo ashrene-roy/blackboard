@@ -25,9 +25,13 @@ const Canvas = () => {
   const [textBoxes, setTextBoxes] = React.useState([]);
   const [strokeWidth,setStrokeWidth] = React.useState(4);
   const [colourValue, setColourValue] = React.useState("#df4b26");
+  const [isUndoDisabled, setUndoDisabled] = React.useState(false);
+  const [isRedoDisabled, setRedoDisabled] = React.useState(false);
 
-  const undoStack = React.useRef([]);
-  const redoStack = React.useRef([]);
+  const [undoStack, setUndoStack] = React.useState([]);
+  const [redoStack, setRedoStack] = React.useState([]);
+
+  const undoStackRef = React.useRef();
   const isStageListening = React.useRef(true);
   const isDrawing = React.useRef(false);
   const colorRef = React.useRef();
@@ -36,6 +40,7 @@ const Canvas = () => {
   lineRef.current = lines;
   textBoxRef.current = textBoxes;
   colorRef.current = colourValue;
+  undoStackRef.current = undoStack;
 
   let originalFixedTopElements = new Set();
   let originalFixedBottomElements = new Set();
@@ -62,7 +67,12 @@ const Canvas = () => {
       isStageListening.current = true;
       window.removeEventListener('dblclick', memoTextBoxEvent, true);
     }
-  },[tool])
+  },[tool]);
+
+  React.useEffect(() => {
+    undoStack.length > 0 ? setUndoDisabled(false) : setUndoDisabled(true);
+    redoStack.length > 0 ? setRedoDisabled(false) : setRedoDisabled(true);
+  },[undoStack,redoStack]);
 
   // Line drawing events
   const handleMouseDown = (e) => {
@@ -209,8 +219,9 @@ const Canvas = () => {
   }
 
   const handleUndo = () => {
-    if(undoStack.current.length > 0) {
-      const event = undoStack.current.pop();
+    if(undoStack.length > 0) {
+      let stack = undoStack;
+      const event = stack.pop();
       alert(JSON.stringify(event))
       if(event.action === 'create_line') {
         let originalLines = lines;
@@ -231,13 +242,14 @@ const Canvas = () => {
         setLines(event.data.lines.concat());
         setTextBoxes(event.data.textBoxes.concat());
       }
-      redoStack.current.push(event);
+      setRedoStack([...redoStack, event]);
     }
   }
 
   const handleRedo = () => {
-    if(redoStack.current.length > 0) {
-      const event = redoStack.current.pop();
+    if(redoStack.length > 0) {
+      let stack = redoStack;
+      const event = stack.pop();
       alert(JSON.stringify(event))
       if(event.action === 'create_line') {
         let originalLines = lines;
@@ -258,7 +270,7 @@ const Canvas = () => {
         setLines([].concat());
         setTextBoxes([].concat());
       }
-      undoStack.current.push(event);
+      setUndoStack([...undoStack, event]);
     }
   }
 
@@ -296,11 +308,12 @@ const Canvas = () => {
   };
 
   const _push_to_stack = (action, data) => {
-    undoStack.current.push({
+    let stack = {
       action,
       data,
-    });
-    redoStack.current = [];
+    };
+    setUndoStack([...undoStackRef.current, stack]);
+    setRedoStack([]);
   }
 
   return (
@@ -340,6 +353,8 @@ const Canvas = () => {
           handleRedo={handleRedo}
           strokeWidth={strokeWidth}
           colourValue={colourValue}
+          isUndoDisabled={isUndoDisabled}
+          isRedoDisabled={isRedoDisabled}
         ></Toolbox>
         {
           textBoxes.map((textbox) => (
