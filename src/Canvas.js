@@ -1,5 +1,5 @@
 /*global chrome*/
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,16 +23,19 @@ const Canvas = () => {
   const [tool, setTool] = React.useState('pen');
   const [lines, setLines] = React.useState([]);
   const [textBoxes, setTextBoxes] = React.useState([]);
-  const [stack, setStack] = React.useState([]);
   const [strokeWidth,setStrokeWidth] = React.useState(4);
   const [colourValue, setColourValue] = React.useState("#df4b26");
 
+  const undoStack = React.useRef([]);
+  const redoStack = React.useRef([]);
   const isStageListening = React.useRef(true);
   const isDrawing = React.useRef(false);
   const colorRef = React.useRef();
   const textBoxRef = React.useRef();
-  colorRef.current = colourValue;
+  const lineRef = React.useRef();
+  lineRef.current = lines;
   textBoxRef.current = textBoxes;
+  colorRef.current = colourValue;
 
   let originalFixedTopElements = new Set();
   let originalFixedBottomElements = new Set();
@@ -47,6 +50,7 @@ const Canvas = () => {
         id: `blackboard-${uuidv4()}`
       }
       originalTextbox.push(textbox);
+      _push_to_stack('create_textbox',textbox);
       setTextBoxes(originalTextbox.concat());
   }, []);
 
@@ -60,6 +64,7 @@ const Canvas = () => {
     }
   },[tool])
 
+  // Line drawing events
   const handleMouseDown = (e) => {
     if(!isStageListening.current) {
       return;
@@ -92,19 +97,11 @@ const Canvas = () => {
     if(!isStageListening.current) {
       return;
     }
+    _push_to_stack('create_line', lineRef.current[lineRef.current.length - 1]);
     isDrawing.current = false;
   };
 
-  const calculateHeight = (e) => {
-    const bodyHeight = document.documentElement.scrollHeight;
-    // use heightRef instead of height inside window eventlistener of useEffect : https://stackoverflow.com/questions/56511176/state-being-reset
-    // MAX canvas length in chrome and firefox os around 32767 pixels
-    if (bodyHeight < 8000) {
-      return bodyHeight - 5; // Subtract few pixels to avoid extending body length
-    }
-    return 8000;
-  };
-
+  // Screenshot event
   const handleCapture = () => {
     let app = document.getElementById('blackboard-canvas-1234');
     let top = app.getBoundingClientRect().top + window.pageYOffset;
@@ -203,44 +200,107 @@ const Canvas = () => {
     setColourValue(colour);
   }
 
+  // Erase all event
   const handleReset = () => {
-    setLines([{action: 'reset', inverse: lines, tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: []}]);
+    _push_to_stack('reset', {lines, textBoxes});
+    setLines([]);
+    setTextBoxes([]);
+
   }
 
   const handleUndo = () => {
-    if(lines.length > 0) {
-      let originalState = lines;
-      const poppedLine = originalState.pop();
-      if(poppedLine.action === 'draw') {
-        setLines(originalState); 
+    if(undoStack.current.length > 0) {
+      const event = undoStack.current.pop();
+      alert(JSON.stringify(event))
+      if(event.action === 'create_line') {
+        let originalLines = lines;
+        originalLines.pop();
+        setLines(originalLines.concat());
       }
-      if(poppedLine.action === 'reset') {
-        setLines(poppedLine.inverse); 
+      if(event.action === 'create_textbox') {
+        let originalTextboxes = textBoxes;
+        originalTextboxes.pop();
+        setTextBoxes(originalTextboxes.concat());
       }
-      setStack([...stack, poppedLine]);
+      if(event.action === 'delete_textbox') {
+        let originalTextboxes = textBoxes;
+        originalTextboxes.push(event.data);
+        setTextBoxes(originalTextboxes.concat());
+      }
+      if(event.action === 'reset') {
+        setLines(event.data.lines.concat());
+        setTextBoxes(event.data.textBoxes.concat());
+      }
+      redoStack.current.push(event);
     }
-    
   }
 
   const handleRedo = () => {
-    if(stack.length > 0) {
-      let originalState = stack;
-      const poppedLine = originalState.pop();
-      if(poppedLine.action === 'draw') {
-        setLines([...lines, poppedLine]); 
+    if(redoStack.current.length > 0) {
+      const event = redoStack.current.pop();
+      alert(JSON.stringify(event))
+      if(event.action === 'create_line') {
+        let originalLines = lines;
+        originalLines.push(event.data);
+        setLines(originalLines.concat());
       }
-      if(poppedLine.action === 'reset') {
-        handleReset();
+      if(event.action === 'create_textbox') {
+        let originalTextboxes = textBoxes;
+        originalTextboxes.push(event.data);
+        setTextBoxes(originalTextboxes.concat());
       }
-      setStack(originalState);
+      if(event.action === 'delete_textbox') {
+        let originalTextboxes = textBoxes;
+        originalTextboxes.pop();
+        setTextBoxes(originalTextboxes.concat());
+      }
+      if(event.action === 'reset') {
+        setLines([].concat());
+        setTextBoxes([].concat());
+      }
+      undoStack.current.push(event);
     }
   }
 
+  // Textbox events
   const handleTextboxDelete = (id) => {
     let updatedTextboxList = textBoxes.filter((textbox) => {
-      return textbox.id === id ? false : true;
+      if(textbox.id === id) {
+        _push_to_stack('delete_textbox',textbox);
+        return false;
+      }
+      return true;
     });
+   
     setTextBoxes(updatedTextboxList);
+  }
+  
+  const handleTextChange = (id, text) => {
+    let updatedTextboxList = textBoxes.map((textbox) => {
+      if(textbox.id === id) {
+        textbox.text = text;
+      }
+      return textbox;
+    })
+    setTextBoxes(updatedTextboxList);
+  }
+
+  const calculateHeight = () => {
+    const bodyHeight = document.documentElement.scrollHeight;
+    // use heightRef instead of height inside window eventlistener of useEffect : https://stackoverflow.com/questions/56511176/state-being-reset
+    // MAX canvas length in chrome and firefox is around 32767 pixels
+    if (bodyHeight < 8000) {
+      return bodyHeight - 5; // Subtract few pixels to avoid extending body length
+    }
+    return 8000;
+  };
+
+  const _push_to_stack = (action, data) => {
+    undoStack.current.push({
+      action,
+      data,
+    });
+    redoStack.current = [];
   }
 
   return (
@@ -289,8 +349,10 @@ const Canvas = () => {
               top={textbox.top}
               left={textbox.left}
               color={textbox.color}
+              text={textbox.text}
               disabled={!isStageListening.current}
               handleTextboxDelete={() => handleTextboxDelete(textbox.id)}
+              handleTextChange={handleTextChange}
             />
           ))
         }
