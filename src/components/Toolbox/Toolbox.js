@@ -1,16 +1,24 @@
 /*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
+import { TOOLBOX } from '../../constants/values';
 import '../../assets/pencil-black.svg';
 import '../../assets/eraser-black.svg';
 import '../../assets/camera-black.svg';
 import '../../assets/pencil-white.svg';
 import '../../assets/eraser-white.svg';
 import '../../assets/camera-white.svg';
+import '../../assets/text-tool-white.svg';
+import '../../assets/text-tool-black.svg';
+import '../../assets/undo-arrow-white.svg';
+import '../../assets/redo-arrow-white.svg';
+import '../../assets/undo-arrow-grey.svg';
+import '../../assets/redo-arrow-grey.svg';
 import '../../assets/recycle-bin-white.svg';
 
-const Container = styled.div`
+	const Container = styled.div`
 		display: flex;
+		flex-direction: column;
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -19,12 +27,16 @@ const Container = styled.div`
 		border: 2px solid #000000;
 	`;
 
+	const Row = styled.div`
+		display: flex;
+	`;
+
 	const Tools = styled.div`
 		display: ${props => props.isCollapse? 'none' : 'flex'};
 		flex-wrap: wrap;
 		background-color: #000000;
 		align-items: center;
-		width: 300px;
+		width: 430px;
 	`;
 
 	const CollapseButton = styled.button`
@@ -57,7 +69,7 @@ const Container = styled.div`
 	const StrokeOption = styled.div`
 		display: flex;
 		justify-content: space-between;
-		width: 300px;
+		width: 380px;
 		margin-left: 10px;
 		margin-top: 20px;
 		margin-bottom: 20px;
@@ -71,7 +83,9 @@ const Container = styled.div`
 		height: 40px;
 		width: 40px;
 		margin-left: 5px;
+		margin-right: 5px;
 		border: none;
+		padding: 0;
 	`;
 
 	const Label = styled.label`
@@ -79,10 +93,21 @@ const Container = styled.div`
 		margin-right: 15px;
 	`;
 
+	const Info = styled.p`
+		padding: 0;
+		margin: 0;
+		color: #ffffff;
+		margin-left: 20px;
+	`;
+
 const Toolbox = (props) => {
 
-	const [selectedTool, setSelectedTool] = React.useState('');
+	const [selectedTool, setSelectedTool] = React.useState(props.tool);
 	const [isCollapse, setCollapse] = React.useState(false);
+
+	React.useEffect(() => {
+		setSelectedTool(props.tool);
+	},[props.tool])
 
 	const handleCollapse = () => {
 		const state = isCollapse;
@@ -102,31 +127,58 @@ const Toolbox = (props) => {
 		props.handleColourPalette(e.target.value);
 	}
 
+	const handleTextbox = (tool) => {
+		setSelectedTool(tool);
+		props.handleSetTool(tool);
+	}
+
 	const selected = {
 		backgroundColor: 'white',
 	};
 
   return (
 		<Container id="blackboard-canvas-1234-toolbox">
+			<Row>
 			<CollapseButton onClick={handleCollapse}>{'>'}</CollapseButton>
 			<Tools isCollapse={isCollapse}>
+				<Tool onClick={() => props.handleUndo()} disabled={props.isUndoDisabled}>
+					{
+						props.isUndoDisabled ? <Icon src={chrome.extension.getURL('static/media/undo-arrow-grey.svg')} alt="Undo" /> :
+						<Icon src={chrome.extension.getURL('static/media/undo-arrow-white.svg')} alt="Undo" />
+  					}
+				</Tool>
+				<Tool onClick={() => props.handleRedo()} disabled={props.isRedoDisabled}>
+					{
+						props.isRedoDisabled ? <Icon src={chrome.extension.getURL('static/media/redo-arrow-grey.svg')} alt="Redo" /> :
+						<Icon src={chrome.extension.getURL('static/media/redo-arrow-white.svg')} alt="Redo" />
+					}
+				</Tool>
 				{
-					selectedTool === 'pen' ?
-					<Tool onClick={() => handleSelectedTool('pen')} style={selected}>
+					selectedTool === TOOLBOX.PEN ?
+					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)} style={selected}>
 						<Icon src={chrome.extension.getURL('static/media/pencil-black.svg')} alt="Pencil" />
 					</Tool> :
-					<Tool onClick={() => handleSelectedTool('pen')}>
+					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)}>
 						<Icon src={chrome.extension.getURL('static/media/pencil-white.svg')} alt="Pencil" />
 					</Tool>
 				}
 				<ColourPalette type='color' value={props.colourValue} onChange={handleColourPalette} />
 				{
-					selectedTool === 'eraser' ?
-					<Tool onClick={() => handleSelectedTool('eraser')} style={selected}>
+					selectedTool === TOOLBOX.ERASER ?
+					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)} style={selected}>
 						<Icon src={chrome.extension.getURL('static/media/eraser-black.svg')} alt="Eraser" />
 					</Tool> :
-					<Tool onClick={() => handleSelectedTool('eraser')}>
+					<Tool onClick={() => handleSelectedTool(TOOLBOX.ERASER)}>
 						<Icon src={chrome.extension.getURL('static/media/eraser-white.svg')} alt="Eraser" />
+					</Tool>
+				}
+				{
+					selectedTool === TOOLBOX.TEXTBOX ?
+					<Tool onClick={() => handleTextbox(TOOLBOX.PEN, true)} style={selected}>
+						<Icon src={chrome.extension.getURL('static/media/text-tool-black.svg')} alt="Text" />
+					</Tool> :
+					<Tool onClick={() => handleTextbox(TOOLBOX.TEXTBOX, false)}>
+						<Icon src={chrome.extension.getURL('static/media/text-tool-white.svg')} alt="Text" />
 					</Tool>
 				}
 				<Tool onClick={() => props.handleCapture()}>
@@ -137,9 +189,13 @@ const Toolbox = (props) => {
 				</Tool>
 				<StrokeOption>
 					<Label>Size:</Label>
-					<Slider type='range' min={3} max={80} value={props.strokeWidth} onChange={handleslider} />
+					<Slider type='range' min={3} max={100} value={props.strokeWidth} onChange={handleslider} />
 				</StrokeOption>
 			</Tools>
+			</Row>
+			{
+				selectedTool === TOOLBOX.TEXTBOX && !isCollapse ? <Info>Double-click anywhere to insert Textbox</Info> : null
+			}
 		</Container>
   );
 };

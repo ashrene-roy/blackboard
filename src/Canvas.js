@@ -2,7 +2,11 @@
 import React from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
+import { v4 as uuidv4 } from 'uuid';
 import Toolbox from './components/Toolbox/Toolbox';
+import TextBox from './components/TextBox/TextBox';
+import { TOOLBOX, ACTIONS, DEFAULT_STROKE_WIDTH } from './constants/values';
+import { DEFAULT_TOOL_COLOUR } from './constants/theme';
 
 const CanvasMain = styled.div`
   position: absolute;
@@ -18,18 +22,143 @@ const CanvasMain = styled.div`
 
 const Canvas = () => {
 
-  const [tool, setTool] = React.useState('pen');
+  const [tool, setTool] = React.useState(TOOLBOX.PEN);
   const [lines, setLines] = React.useState([]);
-  const [strokeWidth,setStrokeWidth] = React.useState(4);
-  const [colourValue, setColourValue] = React.useState("#df4b26")
+  const [textBoxes, setTextBoxes] = React.useState([]);
+  const [strokeWidth,setStrokeWidth] = React.useState(DEFAULT_STROKE_WIDTH);
+  const [colourValue, setColourValue] = React.useState(DEFAULT_TOOL_COLOUR);
+  const [isUndoDisabled, setUndoDisabled] = React.useState(false);
+  const [isRedoDisabled, setRedoDisabled] = React.useState(false);
 
+  const [undoStack, setUndoStack] = React.useState([]);
+  const [redoStack, setRedoStack] = React.useState([]);
+  const [undoEvent, setUndoEvent] = React.useState();
+  const [redoEvent, setRedoEvent] = React.useState();
+
+  const isStageListening = React.useRef(true);
   const isDrawing = React.useRef(false);
+  const colorRef = React.useRef();
+  const textBoxRef = React.useRef();
+  const lineRef = React.useRef();
+  const undoStackRef = React.useRef();
+  const strokeWidthRef = React.useRef();
+  lineRef.current = lines;
+  textBoxRef.current = textBoxes;
+  colorRef.current = colourValue;
+  undoStackRef.current = undoStack;
+  strokeWidthRef.current = strokeWidth;
 
   let originalFixedTopElements = new Set();
   let originalFixedBottomElements = new Set();
   let canvas = document.createElement('canvas');
 
+  const memoTextBoxEvent = React.useCallback((e) => {
+    let originalTextbox = textBoxRef.current;
+      const textbox = {
+        top: window.scrollY + e.clientY,
+        left: e.clientX,
+        color: colorRef.current,
+        id: `blackboard-${uuidv4()}`,
+        fontSize: strokeWidthRef.current
+      }
+      originalTextbox.push(textbox);
+      _push_to_stack(ACTIONS.CREATE_TEXTBOX, textbox);
+      setTextBoxes(originalTextbox.concat());
+  }, []);
+
+  React.useEffect(() => {
+    if(tool === TOOLBOX.TEXTBOX) {
+      window.addEventListener('dblclick', memoTextBoxEvent, true);
+    } else {
+      window.removeEventListener('dblclick', memoTextBoxEvent, true);
+    }
+  },[tool]);
+
+  React.useEffect(() => {
+    if(tool === TOOLBOX.PEN || tool === TOOLBOX.ERASER) {
+      isStageListening.current = true;
+    } else {
+      isStageListening.current = false;
+    }
+  },[tool]);
+
+  React.useEffect(() => {
+    undoStack.length > 0 ? setUndoDisabled(false) : setUndoDisabled(true);
+    redoStack.length > 0 ? setRedoDisabled(false) : setRedoDisabled(true);
+  },[undoStack,redoStack]);
+
+  //Hook to handle undo event
+  React.useEffect(() => {
+    if(undoEvent) {
+      const length = undoStack.length;
+      const stack = undoStack.slice(0, length - 1);
+      setUndoStack(stack);
+      setRedoStack([...redoStack, undoEvent]);
+      if(undoEvent.action === ACTIONS.CREATE_LINE) {
+        const originalLines = lines.slice(0, lines.length-1);
+        setLines(originalLines);
+      }
+      if(undoEvent.action === ACTIONS.CREATE_TEXTBOX) {
+        const originalTextboxes = textBoxes.slice(0, textBoxes.length-1);
+        setTextBoxes(originalTextboxes);
+      }
+      if(undoEvent.action === ACTIONS.DELETE_TEXTBOX) {
+        setTextBoxes([...textBoxes, undoEvent.data]);
+      }
+      if(undoEvent.action === ACTIONS.RESET) {
+        setLines(undoEvent.data.lines);
+        setTextBoxes(undoEvent.data.textBoxes);
+      }
+    }
+  },[undoEvent]);
+
+  //Hook to handle redo event
+  React.useEffect(() => {
+    if(redoEvent) {
+      const length = redoStack.length;
+      const stack = redoStack.slice(0, length - 1);
+      setRedoStack(stack);
+      setUndoStack([...undoStack, redoEvent]);
+      if(redoEvent.action === ACTIONS.CREATE_LINE) {
+        setLines([...lines, redoEvent.data]);
+      }
+      if(redoEvent.action === ACTIONS.CREATE_TEXTBOX) {
+        setTextBoxes([...textBoxes, redoEvent.data]);
+      }
+      if(redoEvent.action === ACTIONS.DELETE_TEXTBOX) {
+        const originalTextboxes = textBoxes.slice(0, textBoxes.length-1);
+        setTextBoxes(originalTextboxes);
+      }
+      if(redoEvent.action === ACTIONS.RESET) {
+        setLines([]);
+        setTextBoxes([]);
+      }
+    }
+  },[redoEvent]);
+
+  const handleUndo = () => {
+    if(undoStack.length > 0) {
+      setTool(TOOLBOX.DEFAULT);
+      const length = undoStack.length;
+      const event = {...undoStack[length - 1]};
+      setUndoEvent(event);
+    }
+  }
+
+  const handleRedo = () => {
+    if(redoStack.length > 0) {
+      setTool(TOOLBOX.DEFAULT);
+      const length = redoStack.length;
+      const event = {...redoStack[length - 1]};
+      setRedoEvent(event);
+    }
+  }
+
+  // Line drawing events
   const handleMouseDown = (e) => {
+    if(!isStageListening.current) {
+      return;
+    }
     isDrawing.current = true;
     const pos = e.target.getStage().getPointerPosition();
     setLines([...lines, { tool: {name: tool, strokeWidth: strokeWidth, colour: colourValue}, points: [pos.x, pos.y] }]);
@@ -37,6 +166,9 @@ const Canvas = () => {
 
   const handleMouseMove = (e) => {
     // no drawing - skipping
+    if(!isStageListening.current) {
+      return;
+    }
     if (!isDrawing.current) {
       return;
     }
@@ -52,19 +184,14 @@ const Canvas = () => {
   };
 
   const handleMouseUp = () => {
+    if(!isStageListening.current) {
+      return;
+    }
+    _push_to_stack(ACTIONS.CREATE_LINE, lineRef.current[lineRef.current.length - 1]);
     isDrawing.current = false;
   };
 
-  const calculateHeight = (e) => {
-    const bodyHeight = document.documentElement.scrollHeight;
-    // use heightRef instead of height inside window eventlistener of useEffect : https://stackoverflow.com/questions/56511176/state-being-reset
-    // MAX canvas length in chrome and firefox os around 32767 pixels
-    if (bodyHeight < 8000) {
-      return bodyHeight - 5; // Subtract few pixels to avoid extending body length
-    }
-    return 8000;
-  };
-
+  // Screenshot event
   const handleCapture = () => {
     let app = document.getElementById('blackboard-canvas-1234');
     let top = app.getBoundingClientRect().top + window.pageYOffset;
@@ -159,12 +286,58 @@ const Canvas = () => {
     setStrokeWidth(width);
   }
 
-  const handleColourPalette = (colour) => {
-    setColourValue(colour);
+  const handleColourPalette = (value) => {
+    setColourValue(value);
   }
 
+  // Erase all event
   const handleReset = () => {
+    _push_to_stack(ACTIONS.RESET, {lines, textBoxes});
     setLines([]);
+    setTextBoxes([]);
+
+  }
+
+  // Textbox events
+  const handleTextboxDelete = (id) => {
+    let updatedTextboxList = textBoxes.filter((textbox) => {
+      if(textbox.id === id) {
+        _push_to_stack(ACTIONS.DELETE_TEXTBOX,textbox);
+        return false;
+      }
+      return true;
+    });
+   
+    setTextBoxes(updatedTextboxList);
+  }
+  
+  const handleTextChange = (id, text) => {
+    let updatedTextboxList = textBoxes.map((textbox) => {
+      if(textbox.id === id) {
+        textbox.text = text;
+      }
+      return textbox;
+    })
+    setTextBoxes(updatedTextboxList);
+  }
+
+  const calculateHeight = () => {
+    const bodyHeight = document.documentElement.scrollHeight;
+    // use heightRef instead of height inside window eventlistener of useEffect : https://stackoverflow.com/questions/56511176/state-being-reset
+    // MAX canvas length in chrome and firefox is around 32767 pixels
+    if (bodyHeight < 8000) {
+      return bodyHeight - 5; // Subtract few pixels to avoid extending body length
+    }
+    return 8000;
+  };
+
+  const _push_to_stack = (action, data) => {
+    let stack = {
+      action,
+      data,
+    };
+    setUndoStack([...undoStackRef.current, stack]);
+    setRedoStack([]);
   }
 
   return (
@@ -186,23 +359,45 @@ const Canvas = () => {
                 tension={0.5}
                 lineCap="round"
                 globalCompositeOperation={
-                  line.tool.name === 'eraser' ? 'destination-out' : 'source-over'
+                  line.tool.name === TOOLBOX.ERASER ? 'destination-out' : 'source-over'
                 }
               />
             ))}
           </Layer>
         </Stage>
+        {
+          textBoxes.map((textbox) => (
+            <TextBox 
+              id={textbox.id}
+              key={textbox.id}
+              top={textbox.top}
+              left={textbox.left}
+              color={textbox.color}
+              text={textbox.text}
+              fontSize={textbox.fontSize}
+              disabled={tool === TOOLBOX.TEXTBOX ? true : false}
+              handleTextboxDelete={() => handleTextboxDelete(textbox.id)}
+              handleTextChange={handleTextChange}
+            />
+          ))
+        }
         <Toolbox
           handleSetTool={(tool) => {
             setTool(tool);
           }}
+          tool={tool}
           handleCapture={handleCapture}
           handlePencilOption={handlePencilOption}
           handleColourPalette={handleColourPalette}
           handleReset={handleReset}
+          handleUndo={handleUndo}
+          handleRedo={handleRedo}
           strokeWidth={strokeWidth}
           colourValue={colourValue}
+          isUndoDisabled={isUndoDisabled}
+          isRedoDisabled={isRedoDisabled}
         ></Toolbox>
+        
     </CanvasMain>
   );
 };
