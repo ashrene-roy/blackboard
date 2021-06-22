@@ -66,8 +66,8 @@ const Header = (props) => {
       <HeaderContent>
         <Heading><Letter>B</Letter><Title>lackboard</Title></Heading>
         <ButtonWrapper>
-        <Button onClick={props.handleSave}><p>Download{' '}</p> <Icon src={chrome.extension.getURL('static/media/file-download-black.svg')} alt="Download" /></Button>
-        {/* <Button><p>Share{' '}</p> <Icon src={chrome.extension.getURL('static/media/share-black.svg')} alt="Share" /></Button> */}
+        <Button onClick={props.handleSave}><p>Download{' '}</p> <Icon src={chrome.runtime.getURL('static/media/file-download-black.svg')} alt="Download" /></Button>
+        {/* <Button><p>Share{' '}</p> <Icon src={chrome.runtime.getURL('static/media/share-black.svg')} alt="Share" /></Button> */}
         </ButtonWrapper>
       </HeaderContent>
   );
