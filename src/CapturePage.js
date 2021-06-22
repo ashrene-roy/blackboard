@@ -16,6 +16,12 @@ const Image = styled.img`
   box-shadow: 0 0 15px 0 rgb(0 0 0 / 40%);
 `;
 
+const Footer = styled.footer`
+  padding: 10px;
+  margin: 0;
+  font-size: 14px;
+`;
+
 const CapturePage = (props) => {
 
   const handleSave = (datauri) => {
@@ -32,6 +38,7 @@ const CapturePage = (props) => {
       <Screenshot>
         <Image src={props.image} alt="Blackboard Screenshot"></Image>
       </Screenshot>
+      <Footer>👋 Like the tool? Please consider supporting the project on <a href="https://ko-fi.com/ashrene" target="_blank">Ko-fi</a> ❤️</Footer>
     </div>
   );
 };
