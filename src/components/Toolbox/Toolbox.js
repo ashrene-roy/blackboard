@@ -18,12 +18,17 @@ import '../../assets/recycle-bin-white.svg';
 
 	const Container = styled.div`
 		display: flex;
+		flex-direction: column;
 		position: fixed;
 		top: 0;
 		right: 0;
 		background-color: #000000;
 		border-radius: 5px;
 		border: 2px solid #000000;
+	`;
+
+	const Row = styled.div`
+		display: flex;
 	`;
 
 	const Tools = styled.div`
@@ -88,6 +93,13 @@ import '../../assets/recycle-bin-white.svg';
 		margin-right: 15px;
 	`;
 
+	const Info = styled.p`
+		padding: 0;
+		margin: 0;
+		color: #ffffff;
+		margin-left: 20px;
+	`;
+
 const Toolbox = (props) => {
 
 	const [selectedTool, setSelectedTool] = React.useState(props.tool);
@@ -126,6 +138,7 @@ const Toolbox = (props) => {
 
   return (
 		<Container id="blackboard-canvas-1234-toolbox">
+			<Row>
 			<CollapseButton onClick={handleCollapse}>{'>'}</CollapseButton>
 			<Tools isCollapse={isCollapse}>
 				<Tool onClick={() => props.handleUndo()} disabled={props.isUndoDisabled}>
@@ -179,6 +192,10 @@ const Toolbox = (props) => {
 					<Slider type='range' min={3} max={100} value={props.strokeWidth} onChange={handleslider} />
 				</StrokeOption>
 			</Tools>
+			</Row>
+			{
+				selectedTool === TOOLBOX.TEXTBOX && !isCollapse ? <Info>Double-click anywhere to insert Textbox</Info> : null
+			}
 		</Container>
   );
 };

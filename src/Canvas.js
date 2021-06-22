@@ -140,7 +140,7 @@ const Canvas = () => {
     if(undoStack.length > 0) {
       setTool(TOOLBOX.DEFAULT);
       const length = undoStack.length;
-      const event = undoStack[length - 1];
+      const event = {...undoStack[length - 1]};
       setUndoEvent(event);
     }
   }
@@ -149,7 +149,7 @@ const Canvas = () => {
     if(redoStack.length > 0) {
       setTool(TOOLBOX.DEFAULT);
       const length = redoStack.length;
-      const event = redoStack[length - 1];
+      const event = {...redoStack[length - 1]};
       setRedoEvent(event);
     }
   }
