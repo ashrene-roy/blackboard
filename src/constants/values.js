@@ -1,4 +1,5 @@
 export const TOOLBOX = {
+    DEFAULT: "NONE",
     PEN: "PEN",
     ERASER: "ERASER",
     TEXTBOX: "TEXTBOX",
@@ -15,3 +16,5 @@ export const ACTIONS = {
     DELETE_TEXTBOX: "DELETE_TEXTBOX",
     RESET: "RESET"
 }
+
+export const DEFAULT_STROKE_WIDTH = 4;

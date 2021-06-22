@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import Toolbox from './components/Toolbox/Toolbox';
 import TextBox from './components/TextBox/TextBox';
-import { TOOLBOX, ACTIONS } from './constants/values';
+import { TOOLBOX, ACTIONS, DEFAULT_STROKE_WIDTH } from './constants/values';
 import { DEFAULT_TOOL_COLOUR } from './constants/theme';
 
 const CanvasMain = styled.div`
@@ -25,15 +25,15 @@ const Canvas = () => {
   const [tool, setTool] = React.useState(TOOLBOX.PEN);
   const [lines, setLines] = React.useState([]);
   const [textBoxes, setTextBoxes] = React.useState([]);
-  const [strokeWidth,setStrokeWidth] = React.useState(4);
+  const [strokeWidth,setStrokeWidth] = React.useState(DEFAULT_STROKE_WIDTH);
   const [colourValue, setColourValue] = React.useState(DEFAULT_TOOL_COLOUR);
   const [isUndoDisabled, setUndoDisabled] = React.useState(false);
   const [isRedoDisabled, setRedoDisabled] = React.useState(false);
 
   const [undoStack, setUndoStack] = React.useState([]);
   const [redoStack, setRedoStack] = React.useState([]);
-  const [undoEvent, setUndoEvent] = React.useState({});
-  const [redoEvent, setRedoEvent] = React.useState({});
+  const [undoEvent, setUndoEvent] = React.useState();
+  const [redoEvent, setRedoEvent] = React.useState();
 
   const isStageListening = React.useRef(true);
   const isDrawing = React.useRef(false);
@@ -68,11 +68,17 @@ const Canvas = () => {
 
   React.useEffect(() => {
     if(tool === TOOLBOX.TEXTBOX) {
-      isStageListening.current = false;
       window.addEventListener('dblclick', memoTextBoxEvent, true);
     } else {
-      isStageListening.current = true;
       window.removeEventListener('dblclick', memoTextBoxEvent, true);
+    }
+  },[tool]);
+
+  React.useEffect(() => {
+    if(tool === TOOLBOX.PEN || tool === TOOLBOX.ERASER) {
+      isStageListening.current = true;
+    } else {
+      isStageListening.current = false;
     }
   },[tool]);
 
@@ -83,70 +89,67 @@ const Canvas = () => {
 
   //Hook to handle undo event
   React.useEffect(() => {
-    const length = undoStack.length;
-    const stack = undoStack.slice(0, length - 1);
-    setUndoStack(stack);
-    if(undoEvent.action === ACTIONS.CREATE_LINE) {
-      let originalLines = lines;
-      originalLines.pop();
-      setLines(originalLines);
-    }
-    if(undoEvent.action === ACTIONS.CREATE_TEXTBOX) {
-      let originalTextboxes = textBoxes;
-      originalTextboxes.pop();
-      setTextBoxes(originalTextboxes);
-    }
-    if(undoEvent.action === ACTIONS.DELETE_TEXTBOX) {
-      let originalTextboxes = textBoxes;
-      originalTextboxes.push(undoEvent.data);
-      setTextBoxes(originalTextboxes);
-    }
-    if(undoEvent.action === ACTIONS.RESET) {
-      setLines(undoEvent.data.lines);
-      setTextBoxes(undoEvent.data.textBoxes);
+    if(undoEvent) {
+      const length = undoStack.length;
+      const stack = undoStack.slice(0, length - 1);
+      setUndoStack(stack);
+      setRedoStack([...redoStack, undoEvent]);
+      if(undoEvent.action === ACTIONS.CREATE_LINE) {
+        const originalLines = lines.slice(0, lines.length-1);
+        setLines(originalLines);
+      }
+      if(undoEvent.action === ACTIONS.CREATE_TEXTBOX) {
+        const originalTextboxes = textBoxes.slice(0, textBoxes.length-1);
+        setTextBoxes(originalTextboxes);
+      }
+      if(undoEvent.action === ACTIONS.DELETE_TEXTBOX) {
+        setTextBoxes([...textBoxes, undoEvent.data]);
+      }
+      if(undoEvent.action === ACTIONS.RESET) {
+        setLines(undoEvent.data.lines);
+        setTextBoxes(undoEvent.data.textBoxes);
+      }
     }
   },[undoEvent]);
 
   //Hook to handle redo event
   React.useEffect(() => {
-    const length = redoStack.length;
-    const stack = redoStack.slice(0, length - 1);
-    setRedoStack(stack);
-    if(redoEvent.action === ACTIONS.CREATE_LINE) {
-      let originalLines = lines;
-      originalLines.push(redoEvent.data);
-      setLines(originalLines);
-    }
-    if(redoEvent.action === ACTIONS.CREATE_TEXTBOX) {
-      let originalTextboxes = textBoxes;
-      originalTextboxes.push(redoEvent.data);
-      setTextBoxes(originalTextboxes);
-    }
-    if(redoEvent.action === ACTIONS.DELETE_TEXTBOX) {
-      let originalTextboxes = textBoxes;
-      originalTextboxes.pop();
-      setTextBoxes(originalTextboxes);
-    }
-    if(redoEvent.action === ACTIONS.RESET) {
-      setLines([]);
-      setTextBoxes([]);
+    if(redoEvent) {
+      const length = redoStack.length;
+      const stack = redoStack.slice(0, length - 1);
+      setRedoStack(stack);
+      setUndoStack([...undoStack, redoEvent]);
+      if(redoEvent.action === ACTIONS.CREATE_LINE) {
+        setLines([...lines, redoEvent.data]);
+      }
+      if(redoEvent.action === ACTIONS.CREATE_TEXTBOX) {
+        setTextBoxes([...textBoxes, redoEvent.data]);
+      }
+      if(redoEvent.action === ACTIONS.DELETE_TEXTBOX) {
+        const originalTextboxes = textBoxes.slice(0, textBoxes.length-1);
+        setTextBoxes(originalTextboxes);
+      }
+      if(redoEvent.action === ACTIONS.RESET) {
+        setLines([]);
+        setTextBoxes([]);
+      }
     }
   },[redoEvent]);
 
   const handleUndo = () => {
     if(undoStack.length > 0) {
+      setTool(TOOLBOX.DEFAULT);
       const length = undoStack.length;
       const event = undoStack[length - 1];
-      setRedoStack([...redoStack, event]);
       setUndoEvent(event);
     }
   }
 
   const handleRedo = () => {
     if(redoStack.length > 0) {
+      setTool(TOOLBOX.DEFAULT);
       const length = redoStack.length;
       const event = redoStack[length - 1];
-      setUndoStack([...undoStack, event]);
       setRedoEvent(event);
     }
   }
@@ -372,7 +375,7 @@ const Canvas = () => {
               color={textbox.color}
               text={textbox.text}
               fontSize={textbox.fontSize}
-              disabled={!isStageListening.current}
+              disabled={tool === TOOLBOX.TEXTBOX ? true : false}
               handleTextboxDelete={() => handleTextboxDelete(textbox.id)}
               handleTextChange={handleTextChange}
             />

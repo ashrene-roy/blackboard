@@ -93,6 +93,10 @@ const Toolbox = (props) => {
 	const [selectedTool, setSelectedTool] = React.useState(props.tool);
 	const [isCollapse, setCollapse] = React.useState(false);
 
+	React.useEffect(() => {
+		setSelectedTool(props.tool);
+	},[props.tool])
+
 	const handleCollapse = () => {
 		const state = isCollapse;
 		setCollapse(!state);
