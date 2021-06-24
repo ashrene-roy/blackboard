@@ -1,6 +1,8 @@
+/*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
 import Header from './components/Header/Header';
+import './assets/images/Ko-fi_Logo_RGB.png';
 
 const Screenshot = styled.div`
   padding-top: 90px;
@@ -20,7 +22,13 @@ const Footer = styled.footer`
   padding: 10px;
   margin: 0;
   font-size: 14px;
+  display: flex;
+  align-items: center;
 `;
+
+const Support = styled.img`
+    width: 70px;
+  `;
 
 const CapturePage = (props) => {
 
@@ -38,7 +46,11 @@ const CapturePage = (props) => {
       <Screenshot>
         <Image src={props.image} alt="Blackboard Screenshot"></Image>
       </Screenshot>
-      <Footer>👋 Like the tool? Please consider supporting the project on <a href="https://ko-fi.com/ashrene" target="_blank">Ko-fi</a> ❤️</Footer>
+      <Footer>
+        <p>👋 Like the tool? Please consider supporting the project on &nbsp;</p>
+        <Support src={chrome.runtime.getURL('static/media/Ko-fi_Logo_RGB.png')} onClick={() => window.open('https://ko-fi.com/ashrene', "_blank")}></Support>
+        <span>&nbsp; Good day ❤️</span>
+      </Footer>
     </div>
   );
 };
