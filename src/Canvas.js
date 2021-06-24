@@ -51,6 +51,8 @@ const Canvas = () => {
   let originalFixedTopElements = new Set();
   let originalFixedBottomElements = new Set();
   let canvas = document.createElement('canvas');
+  let originalOverflowY = document.documentElement.style.overflow;
+  let originalScroll = document.documentElement.style.scrollBehavior;
 
   const memoTextBoxEvent = React.useCallback((e) => {
     let originalTextbox = textBoxRef.current;
@@ -239,7 +241,7 @@ const Canvas = () => {
           _cleanup();
         });
       }	
-    }, 400);
+    }, 150);
   };
 
   const _cleanup = () => {
@@ -253,6 +255,8 @@ const Canvas = () => {
     toolbox.style.display = 'flex';
     let app = document.getElementById('blackboard-canvas-1234');
     app.style.boxShadow = '0px 0px 0px 3px limegreen inset';
+    document.documentElement.style.overflow = originalOverflowY;
+    document.documentElement.style.scrollBehavior = originalScroll; 
   };
   
   const _getAllFixedElements = () => {
@@ -280,6 +284,8 @@ const Canvas = () => {
     let app = document.getElementById('blackboard-canvas-1234');
     toolbox.style.display = 'none';
     app.style.boxShadow = 'none';
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.scrollBehavior = 'auto'; 
   }
 
   const handlePencilOption = (width) => {
