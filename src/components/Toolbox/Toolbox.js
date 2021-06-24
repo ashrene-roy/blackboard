@@ -2,19 +2,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TOOLBOX } from '../../constants/values';
-import '../../assets/pencil-black.svg';
-import '../../assets/eraser-black.svg';
-import '../../assets/camera-black.svg';
-import '../../assets/pencil-white.svg';
-import '../../assets/eraser-white.svg';
-import '../../assets/camera-white.svg';
-import '../../assets/text-tool-white.svg';
-import '../../assets/text-tool-black.svg';
-import '../../assets/undo-arrow-white.svg';
-import '../../assets/redo-arrow-white.svg';
-import '../../assets/undo-arrow-grey.svg';
-import '../../assets/redo-arrow-grey.svg';
-import '../../assets/recycle-bin-white.svg';
+import '../../assets/images/pencil-black.svg';
+import '../../assets/images/eraser-black.svg';
+import '../../assets/images/camera-black.svg';
+import '../../assets/images/pencil-white.svg';
+import '../../assets/images/eraser-white.svg';
+import '../../assets/images/camera-white.svg';
+import '../../assets/images/text-tool-white.svg';
+import '../../assets/images/text-tool-black.svg';
+import '../../assets/images/undo-arrow-white.svg';
+import '../../assets/images/redo-arrow-white.svg';
+import '../../assets/images/undo-arrow-grey.svg';
+import '../../assets/images/redo-arrow-grey.svg';
+import '../../assets/images/recycle-bin-white.svg';
 
 	const Container = styled.div`
 		display: flex;

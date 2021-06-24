@@ -1,8 +1,8 @@
 /*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
-import '../../assets/file-download-black.svg';
-import '../../assets/share-black.svg';
+import '../../assets/images/file-download-black.svg';
+import '../../assets/images/share-black.svg';
 
 const HeaderContent = styled.header`
   background-color: #0E1218;;
@@ -22,13 +22,13 @@ const Heading = styled.div`
   display: flex;
 `;
 const Title = styled.h1`
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: 'Lato Heavy';
   color: white;
   font-size: 40px;
   font-weight:bold;
 `
 const Letter = styled.h1`
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-family: 'Lato Heavy';
   color: #FFFFFF;
   font-size: 40px;
   font-weight:bold;
@@ -66,8 +66,7 @@ const Header = (props) => {
       <HeaderContent>
         <Heading><Letter>B</Letter><Title>lackboard</Title></Heading>
         <ButtonWrapper>
-        <Button onClick={props.handleSave}><p>Download{' '}</p> <Icon src={chrome.runtime.getURL('static/media/file-download-black.svg')} alt="Download" /></Button>
-        {/* <Button><p>Share{' '}</p> <Icon src={chrome.runtime.getURL('static/media/share-black.svg')} alt="Share" /></Button> */}
+        <Button onClick={props.handleSave}><p>Download{' '}</p> <Icon src={chrome.extension.getURL('static/media/file-download-black.svg')} alt="Download" /></Button>
         </ButtonWrapper>
       </HeaderContent>
   );

@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
-import '../../assets/recycle-bin.svg';
+import '../../assets/images/recycle-bin.svg';
 
 const Textarea = styled.textarea`
   color: ${props => props.color} !important;

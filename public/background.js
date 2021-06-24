@@ -9,7 +9,7 @@ chrome.action.onClicked.addListener(() => {
         alert("Sorry this page is not accessible due to chrome web store policies");
         return;
       }
-    })
+    });
   });
 });
 
@@ -34,5 +34,13 @@ chrome.runtime.onMessage.addListener(
       console.log('Unmatched request of \'' + request + '\' from script to background.js from ' + sender);
     }
     return true;
+  }
+);
+
+chrome.runtime.onInstalled.addListener(
+  (details) => {
+    if(details.reason === 'install') {
+      chrome.tabs.create({ url: 'about.html' }, () => {});
+    }
   }
 );
