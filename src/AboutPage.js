@@ -95,10 +95,10 @@ const AboutPage = () => {
     <div>
       <HeaderContent>
         <Heading><Letter>B</Letter><Title>lackboard</Title></Heading>
-        <Support src={chrome.extension.getURL('static/media/SupportMe_blue@2x.png')} alt="Support" onClick={() => window.open('https://ko-fi.com/ashrene', "_blank")}/>       
+        <Support src={chrome.runtime.getURL('static/media/SupportMe_blue@2x.png')} alt="Support" onClick={() => window.open('https://ko-fi.com/ashrene', "_blank")}/>       
       </HeaderContent>
       <About>
-        <Image src={chrome.extension.getURL('static/media/about-page.png')} alt="About Blackboard"></Image>
+        <Image src={chrome.runtime.getURL('static/media/about-page.png')} alt="About Blackboard"></Image>
         <Box>
           <H1>👋 Hello there! Thanks for downloading Blackboard 💜</H1>
           <H2>Use blackboard to annotate live webpages and take full length screenshots.</H2>
