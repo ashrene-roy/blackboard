@@ -60,6 +60,7 @@ module.exports = {
   entry: {
     main: [require.resolve('./polyfills'), './src/chrome/main.js'],
     capture: [require.resolve('./polyfills'), './src/chrome/capture.js'],
+    about: [require.resolve('./polyfills'), './src/chrome/about.js'],
   },
   optimization: {
     minimize: false //Update this to true or false
