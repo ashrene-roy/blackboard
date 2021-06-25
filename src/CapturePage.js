@@ -44,6 +44,7 @@ const CapturePage = (props) => {
     <div>
       <Header title={'Blackboard'} handleSave={() => {handleSave(props.image)}}></Header>
       <Screenshot>
+        <p>💡 For best results avoid scrolling the page when screenshot is being captured</p>
         <Image src={props.image} alt="Blackboard Screenshot"></Image>
       </Screenshot>
       <Footer>

@@ -346,6 +346,13 @@ const Canvas = () => {
     setRedoStack([]);
   }
 
+  const handleAppClose = () => {
+    const blackBoardApp = document.getElementById('blackboard-extension-root-1234');
+    if(blackBoardApp) {
+      blackBoardApp.parentNode.removeChild(blackBoardApp);
+    }
+  }
+
   return (
     <CanvasMain id="blackboard-canvas-1234">
         <Stage
@@ -398,6 +405,7 @@ const Canvas = () => {
           handleReset={handleReset}
           handleUndo={handleUndo}
           handleRedo={handleRedo}
+          handleAppClose={handleAppClose}
           strokeWidth={strokeWidth}
           colourValue={colourValue}
           isUndoDisabled={isUndoDisabled}

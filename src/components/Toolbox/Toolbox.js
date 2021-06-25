@@ -2,6 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TOOLBOX } from '../../constants/values';
+import '../../assets/images/exit-white.svg';
 import '../../assets/images/pencil-black.svg';
 import '../../assets/images/eraser-black.svg';
 import '../../assets/images/camera-black.svg';
@@ -36,7 +37,7 @@ import '../../assets/images/recycle-bin-white.svg';
 		flex-wrap: wrap;
 		background-color: #000000;
 		align-items: center;
-		width: 430px;
+		width: 490px;
 	`;
 
 	const CollapseButton = styled.button`
@@ -69,7 +70,7 @@ import '../../assets/images/recycle-bin-white.svg';
 	const StrokeOption = styled.div`
 		display: flex;
 		justify-content: space-between;
-		width: 380px;
+		width: 450px;
 		margin-left: 10px;
 		margin-top: 20px;
 		margin-bottom: 20px;
@@ -186,6 +187,9 @@ const Toolbox = (props) => {
 				</Tool>
 				<Tool onClick={() => props.handleReset()}>
 					<Icon src={chrome.runtime.getURL('static/media/recycle-bin-white.svg')} alt="Trash" />
+				</Tool>
+				<Tool onClick={() => props.handleAppClose()}>
+					<Icon src={chrome.runtime.getURL('static/media/exit-white.svg')} alt="Trash" />
 				</Tool>
 				<StrokeOption>
 					<Label>Size:</Label>
