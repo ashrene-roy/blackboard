@@ -1,4 +1,3 @@
-/*global chrome*/
 import React from 'react';
 import { Stage, Layer, Line } from 'react-konva';
 import styled from 'styled-components';
@@ -56,16 +55,16 @@ const Canvas = () => {
 
   const memoTextBoxEvent = React.useCallback((e) => {
     let originalTextbox = textBoxRef.current;
-      const textbox = {
-        top: window.scrollY + e.clientY,
-        left: e.clientX,
-        color: colorRef.current,
-        id: `blackboard-${uuidv4()}`,
-        fontSize: strokeWidthRef.current
-      }
-      originalTextbox.push(textbox);
-      _push_to_stack(ACTIONS.CREATE_TEXTBOX, textbox);
-      setTextBoxes(originalTextbox.concat());
+    const textbox = {
+      top: window.scrollY + e.clientY,
+      left: e.clientX,
+      color: colorRef.current,
+      id: `blackboard-${uuidv4()}`,
+      fontSize: strokeWidthRef.current
+    };
+    originalTextbox.push(textbox);
+    _push_to_stack(ACTIONS.CREATE_TEXTBOX, textbox);
+    setTextBoxes(originalTextbox.concat());
   }, []);
 
   React.useEffect(() => {
@@ -145,7 +144,7 @@ const Canvas = () => {
       const event = {...undoStack[length - 1]};
       setUndoEvent(event);
     }
-  }
+  };
 
   const handleRedo = () => {
     if(redoStack.length > 0) {
@@ -154,7 +153,7 @@ const Canvas = () => {
       const event = {...redoStack[length - 1]};
       setRedoEvent(event);
     }
-  }
+  };
 
   // Line drawing events
   const handleMouseDown = (e) => {
@@ -286,15 +285,15 @@ const Canvas = () => {
     app.style.boxShadow = 'none';
     document.documentElement.style.overflow = 'hidden';
     document.documentElement.style.scrollBehavior = 'auto'; 
-  }
+  };
 
   const handlePencilOption = (width) => {
     setStrokeWidth(width);
-  }
+  };
 
   const handleColourPalette = (value) => {
     setColourValue(value);
-  }
+  };
 
   // Erase all event
   const handleReset = () => {
@@ -302,7 +301,7 @@ const Canvas = () => {
     setLines([]);
     setTextBoxes([]);
 
-  }
+  };
 
   // Textbox events
   const handleTextboxDelete = (id) => {
@@ -315,7 +314,7 @@ const Canvas = () => {
     });
    
     setTextBoxes(updatedTextboxList);
-  }
+  };
   
   const handleTextChange = (id, text) => {
     let updatedTextboxList = textBoxes.map((textbox) => {
@@ -323,9 +322,9 @@ const Canvas = () => {
         textbox.text = text;
       }
       return textbox;
-    })
+    });
     setTextBoxes(updatedTextboxList);
-  }
+  };
 
   const calculateHeight = () => {
     const bodyHeight = document.documentElement.scrollHeight;
@@ -344,73 +343,73 @@ const Canvas = () => {
     };
     setUndoStack([...undoStackRef.current, stack]);
     setRedoStack([]);
-  }
+  };
 
   const handleAppClose = () => {
     const blackBoardApp = document.getElementById('blackboard-extension-root-1234');
     if(blackBoardApp) {
       blackBoardApp.parentNode.removeChild(blackBoardApp);
     }
-  }
+  };
 
   return (
     <CanvasMain id="blackboard-canvas-1234">
-        <Stage
-          width={window.innerWidth}
-          height={calculateHeight()}
-          onMouseDown={handleMouseDown}
-          onMousemove={handleMouseMove}
-          onMouseup={handleMouseUp}
-        >
-          <Layer>
-            {lines.map((line, i) => (
-              <Line
-                key={i}
-                points={line.points}
-                stroke={line.tool.colour}
-                strokeWidth={line.tool.strokeWidth}
-                tension={0.5}
-                lineCap="round"
-                globalCompositeOperation={
-                  line.tool.name === TOOLBOX.ERASER ? 'destination-out' : 'source-over'
-                }
-              />
-            ))}
-          </Layer>
-        </Stage>
-        {
-          textBoxes.map((textbox) => (
-            <TextBox 
-              id={textbox.id}
-              key={textbox.id}
-              top={textbox.top}
-              left={textbox.left}
-              color={textbox.color}
-              text={textbox.text}
-              fontSize={textbox.fontSize}
-              disabled={tool === TOOLBOX.TEXTBOX ? true : false}
-              handleTextboxDelete={() => handleTextboxDelete(textbox.id)}
-              handleTextChange={handleTextChange}
+      <Stage
+        width={window.innerWidth}
+        height={calculateHeight()}
+        onMouseDown={handleMouseDown}
+        onMousemove={handleMouseMove}
+        onMouseup={handleMouseUp}
+      >
+        <Layer>
+          {lines.map((line, i) => (
+            <Line
+              key={i}
+              points={line.points}
+              stroke={line.tool.colour}
+              strokeWidth={line.tool.strokeWidth}
+              tension={0.5}
+              lineCap="round"
+              globalCompositeOperation={
+                line.tool.name === TOOLBOX.ERASER ? 'destination-out' : 'source-over'
+              }
             />
-          ))
-        }
-        <Toolbox
-          handleSetTool={(tool) => {
-            setTool(tool);
-          }}
-          tool={tool}
-          handleCapture={handleCapture}
-          handlePencilOption={handlePencilOption}
-          handleColourPalette={handleColourPalette}
-          handleReset={handleReset}
-          handleUndo={handleUndo}
-          handleRedo={handleRedo}
-          handleAppClose={handleAppClose}
-          strokeWidth={strokeWidth}
-          colourValue={colourValue}
-          isUndoDisabled={isUndoDisabled}
-          isRedoDisabled={isRedoDisabled}
-        ></Toolbox>
+          ))}
+        </Layer>
+      </Stage>
+      {
+        textBoxes.map((textbox) => (
+          <TextBox 
+            id={textbox.id}
+            key={textbox.id}
+            top={textbox.top}
+            left={textbox.left}
+            color={textbox.color}
+            text={textbox.text}
+            fontSize={textbox.fontSize}
+            disabled={tool === TOOLBOX.TEXTBOX ? true : false}
+            handleTextboxDelete={() => handleTextboxDelete(textbox.id)}
+            handleTextChange={handleTextChange}
+          />
+        ))
+      }
+      <Toolbox
+        handleSetTool={(tool) => {
+          setTool(tool);
+        }}
+        tool={tool}
+        handleCapture={handleCapture}
+        handlePencilOption={handlePencilOption}
+        handleColourPalette={handleColourPalette}
+        handleReset={handleReset}
+        handleUndo={handleUndo}
+        handleRedo={handleRedo}
+        handleAppClose={handleAppClose}
+        strokeWidth={strokeWidth}
+        colourValue={colourValue}
+        isUndoDisabled={isUndoDisabled}
+        isRedoDisabled={isRedoDisabled}
+      ></Toolbox>
         
     </CanvasMain>
   );

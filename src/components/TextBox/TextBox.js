@@ -1,7 +1,7 @@
-/*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
 import Draggable from 'react-draggable';
+import PropTypes from 'prop-types';
 import '../../assets/images/recycle-bin.svg';
 
 const Textarea = styled.textarea`
@@ -58,17 +58,29 @@ const Icon = styled.img`
 const TextBox = (props) => {
 
   return (
-      <Draggable disabled={props.disabled}>
-        <Container top={props.top} left={props.left}>
-            <Textarea
-                fontSize={props.fontSize}
-                onChange={(e) => props.handleTextChange(props.id, e.target.value)}
-                color={props.color}
-            >{props.text}</Textarea>
-            <Button onClick={props.handleTextboxDelete}><Icon src={chrome.runtime.getURL('static/media/recycle-bin.svg')} alt="Trash" /></Button>
-        </Container>
-      </Draggable>
+    <Draggable disabled={props.disabled}>
+      <Container top={props.top} left={props.left}>
+        <Textarea
+          fontSize={props.fontSize}
+          onChange={(e) => props.handleTextChange(props.id, e.target.value)}
+          color={props.color}
+        >{props.text}</Textarea>
+        <Button onClick={props.handleTextboxDelete}><Icon src={chrome.runtime.getURL('static/media/recycle-bin.svg')} alt="Trash" /></Button>
+      </Container>
+    </Draggable>
   );
+};
+
+TextBox.propTypes = {
+  id: PropTypes.string,
+  disabled: PropTypes.bool,
+  top: PropTypes.number,
+  left: PropTypes.number,
+  fontSize: PropTypes.number,
+  color: PropTypes.string,
+  text: PropTypes.string,
+  handleTextChange: PropTypes.func,
+  handleTextboxDelete: PropTypes.func
 };
 
 export default TextBox;

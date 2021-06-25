@@ -1,4 +1,3 @@
-/*global chrome*/
 // Called when the user clicks on the browser action
 chrome.action.onClicked.addListener(() => {
   // Send a message to the active tab
@@ -24,7 +23,7 @@ chrome.runtime.onMessage.addListener(
       break;
     case 'save':
       chrome.storage.local.set({image: request.image}, () => {
-        chrome.tabs.create({ url: 'capture.html' }, (tab) => {
+        chrome.tabs.create({ url: 'capture.html' }, () => {
           sendResponse('done');
         });
       });

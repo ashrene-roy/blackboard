@@ -4,11 +4,11 @@ import AboutPage from '../AboutPage';
 import GlobalStyle from './theme';
 
 const App = () => (
-    <>
-      <GlobalStyle />
-      <AboutPage/>
-    </>
-  );
+  <>
+    <GlobalStyle />
+    <AboutPage/>
+  </>
+);
 
   
 const app = document.getElementById('about-root');

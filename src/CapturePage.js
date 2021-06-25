@@ -1,6 +1,6 @@
-/*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import Header from './components/Header/Header';
 import './assets/images/Ko-fi_Logo_RGB.png';
 
@@ -38,11 +38,11 @@ const CapturePage = (props) => {
     link.download = "screenshot-" + new Date().getTime() + ".png";
     link.href = image;
     link.click();
-  }
+  };
 
   return (
     <div>
-      <Header title={'Blackboard'} handleSave={() => {handleSave(props.image)}}></Header>
+      <Header title={'Blackboard'} handleSave={() => {handleSave(props.image);}}></Header>
       <Screenshot>
         <p>💡 For best results avoid scrolling the page when screenshot is being captured</p>
         <Image src={props.image} alt="Blackboard Screenshot"></Image>
@@ -54,6 +54,10 @@ const CapturePage = (props) => {
       </Footer>
     </div>
   );
+};
+
+CapturePage.propTypes = {
+  image: PropTypes.string,
 };
 
 export default CapturePage;

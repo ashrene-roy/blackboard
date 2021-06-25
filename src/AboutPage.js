@@ -1,12 +1,10 @@
-/*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
 import './assets/images/about-page.png';
 import './assets/images/SupportMe_blue@2x.png';
 
 const AboutPage = () => {
-
-	const About = styled.div`
+  const About = styled.div`
     padding-top: 90px;
     padding-left: 20%;
     padding-right: 20%;
@@ -90,12 +88,12 @@ const AboutPage = () => {
     font-size: 16px;
     padding: 0px 30px 0px 50px;
   `;
-  
+
   return (
     <div>
       <HeaderContent>
         <Heading><Letter>B</Letter><Title>lackboard</Title></Heading>
-        <Support src={chrome.runtime.getURL('static/media/SupportMe_blue@2x.png')} alt="Support" onClick={() => window.open('https://ko-fi.com/ashrene', "_blank")}/>       
+        <Support src={chrome.runtime.getURL('static/media/SupportMe_blue@2x.png')} alt="Support" onClick={() => window.open('https://ko-fi.com/ashrene', '_blank')}/>
       </HeaderContent>
       <About>
         <Image src={chrome.runtime.getURL('static/media/about-page.png')} alt="About Blackboard"></Image>
