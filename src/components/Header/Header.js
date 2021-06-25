@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import '../../assets/images/file-download-black.svg';
 import '../../assets/images/share-black.svg';
+import '../../assets/images/about.svg';
 
 const HeaderContent = styled.header`
   background-color: #0E1218;;
@@ -45,7 +46,6 @@ const Button = styled.button`
   color: #000000;
   border: 1px solid #0E1218;
   height: 40px;
-  width: 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -66,7 +66,8 @@ const Header = (props) => {
       <HeaderContent>
         <Heading><Letter>B</Letter><Title>lackboard</Title></Heading>
         <ButtonWrapper>
-        <Button onClick={props.handleSave}><p>Download{' '}</p> <Icon src={chrome.extension.getURL('static/media/file-download-black.svg')} alt="Download" /></Button>
+        <Button onClick={props.handleSave}><p>Download &nbsp;</p> <Icon src={chrome.runtime.getURL('static/media/file-download-black.svg')} alt="Download" /></Button>
+        <Button onClick={() => window.open(chrome.runtime.getURL('about.html'), "_blank")}><p>About &nbsp;</p> <Icon src={chrome.runtime.getURL('static/media/about.svg')} alt="About" /></Button>
         </ButtonWrapper>
       </HeaderContent>
   );

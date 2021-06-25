@@ -2,6 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TOOLBOX } from '../../constants/values';
+import '../../assets/images/exit-white.svg';
 import '../../assets/images/pencil-black.svg';
 import '../../assets/images/eraser-black.svg';
 import '../../assets/images/camera-black.svg';
@@ -36,7 +37,7 @@ import '../../assets/images/recycle-bin-white.svg';
 		flex-wrap: wrap;
 		background-color: #000000;
 		align-items: center;
-		width: 430px;
+		width: 490px;
 	`;
 
 	const CollapseButton = styled.button`
@@ -69,7 +70,7 @@ import '../../assets/images/recycle-bin-white.svg';
 	const StrokeOption = styled.div`
 		display: flex;
 		justify-content: space-between;
-		width: 380px;
+		width: 450px;
 		margin-left: 10px;
 		margin-top: 20px;
 		margin-bottom: 20px;
@@ -143,49 +144,52 @@ const Toolbox = (props) => {
 			<Tools isCollapse={isCollapse}>
 				<Tool onClick={() => props.handleUndo()} disabled={props.isUndoDisabled}>
 					{
-						props.isUndoDisabled ? <Icon src={chrome.extension.getURL('static/media/undo-arrow-grey.svg')} alt="Undo" /> :
-						<Icon src={chrome.extension.getURL('static/media/undo-arrow-white.svg')} alt="Undo" />
+						props.isUndoDisabled ? <Icon src={chrome.runtime.getURL('static/media/undo-arrow-grey.svg')} alt="Undo" /> :
+						<Icon src={chrome.runtime.getURL('static/media/undo-arrow-white.svg')} alt="Undo" />
   					}
 				</Tool>
 				<Tool onClick={() => props.handleRedo()} disabled={props.isRedoDisabled}>
 					{
-						props.isRedoDisabled ? <Icon src={chrome.extension.getURL('static/media/redo-arrow-grey.svg')} alt="Redo" /> :
-						<Icon src={chrome.extension.getURL('static/media/redo-arrow-white.svg')} alt="Redo" />
+						props.isRedoDisabled ? <Icon src={chrome.runtime.getURL('static/media/redo-arrow-grey.svg')} alt="Redo" /> :
+						<Icon src={chrome.runtime.getURL('static/media/redo-arrow-white.svg')} alt="Redo" />
 					}
 				</Tool>
 				{
 					selectedTool === TOOLBOX.PEN ?
 					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)} style={selected}>
-						<Icon src={chrome.extension.getURL('static/media/pencil-black.svg')} alt="Pencil" />
+						<Icon src={chrome.runtime.getURL('static/media/pencil-black.svg')} alt="Pencil" />
 					</Tool> :
 					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)}>
-						<Icon src={chrome.extension.getURL('static/media/pencil-white.svg')} alt="Pencil" />
+						<Icon src={chrome.runtime.getURL('static/media/pencil-white.svg')} alt="Pencil" />
 					</Tool>
 				}
 				<ColourPalette type='color' value={props.colourValue} onChange={handleColourPalette} />
 				{
 					selectedTool === TOOLBOX.ERASER ?
 					<Tool onClick={() => handleSelectedTool(TOOLBOX.PEN)} style={selected}>
-						<Icon src={chrome.extension.getURL('static/media/eraser-black.svg')} alt="Eraser" />
+						<Icon src={chrome.runtime.getURL('static/media/eraser-black.svg')} alt="Eraser" />
 					</Tool> :
 					<Tool onClick={() => handleSelectedTool(TOOLBOX.ERASER)}>
-						<Icon src={chrome.extension.getURL('static/media/eraser-white.svg')} alt="Eraser" />
+						<Icon src={chrome.runtime.getURL('static/media/eraser-white.svg')} alt="Eraser" />
 					</Tool>
 				}
 				{
 					selectedTool === TOOLBOX.TEXTBOX ?
 					<Tool onClick={() => handleTextbox(TOOLBOX.PEN, true)} style={selected}>
-						<Icon src={chrome.extension.getURL('static/media/text-tool-black.svg')} alt="Text" />
+						<Icon src={chrome.runtime.getURL('static/media/text-tool-black.svg')} alt="Text" />
 					</Tool> :
 					<Tool onClick={() => handleTextbox(TOOLBOX.TEXTBOX, false)}>
-						<Icon src={chrome.extension.getURL('static/media/text-tool-white.svg')} alt="Text" />
+						<Icon src={chrome.runtime.getURL('static/media/text-tool-white.svg')} alt="Text" />
 					</Tool>
 				}
 				<Tool onClick={() => props.handleCapture()}>
-					<Icon src={chrome.extension.getURL('static/media/camera-white.svg')} alt="Screenshot" />
+					<Icon src={chrome.runtime.getURL('static/media/camera-white.svg')} alt="Screenshot" />
 				</Tool>
 				<Tool onClick={() => props.handleReset()}>
-					<Icon src={chrome.extension.getURL('static/media/recycle-bin-white.svg')} alt="Trash" />
+					<Icon src={chrome.runtime.getURL('static/media/recycle-bin-white.svg')} alt="Trash" />
+				</Tool>
+				<Tool onClick={() => props.handleAppClose()}>
+					<Icon src={chrome.runtime.getURL('static/media/exit-white.svg')} alt="Trash" />
 				</Tool>
 				<StrokeOption>
 					<Label>Size:</Label>

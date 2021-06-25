@@ -2,16 +2,19 @@
   "short_name": "Blackboard",
   "name": "Blackboard",
   "version": "0.1.0",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "background": {
-    "scripts": ["app/background.js"]
+    "service_worker": "background.js"
   },
-  "permissions": [ "activeTab", "tabs", "storage", "unlimitedStorage"],
-  "browser_action": {
+  "permissions": [ "activeTab", "tabs", "storage", "unlimitedStorage", "scripting"],
+  "action": {
     "default_icon": "icon-48.png"
   },
   "web_accessible_resources":[
-    "favicon.ico", "/static/media/*"
+    {
+      "resources": ["favicon.ico", "/static/media/*"],
+      "matches": ["<all_urls>"]
+    }
   ],
   "icons": {
     "16": "icon-16.png",

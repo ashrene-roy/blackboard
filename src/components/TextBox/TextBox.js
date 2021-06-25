@@ -65,7 +65,7 @@ const TextBox = (props) => {
                 onChange={(e) => props.handleTextChange(props.id, e.target.value)}
                 color={props.color}
             >{props.text}</Textarea>
-            <Button onClick={props.handleTextboxDelete}><Icon src={chrome.extension.getURL('static/media/recycle-bin.svg')} alt="Trash" /></Button>
+            <Button onClick={props.handleTextboxDelete}><Icon src={chrome.runtime.getURL('static/media/recycle-bin.svg')} alt="Trash" /></Button>
         </Container>
       </Draggable>
   );

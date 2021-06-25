@@ -95,14 +95,14 @@ const AboutPage = () => {
     <div>
       <HeaderContent>
         <Heading><Letter>B</Letter><Title>lackboard</Title></Heading>
-        <Support src={chrome.extension.getURL('static/media/SupportMe_blue@2x.png')} alt="Support" onClick={() => window.open('https://ko-fi.com/ashrene', "_blank")}/>       
+        <Support src={chrome.runtime.getURL('static/media/SupportMe_blue@2x.png')} alt="Support" onClick={() => window.open('https://ko-fi.com/ashrene', "_blank")}/>       
       </HeaderContent>
       <About>
-        <Image src={chrome.extension.getURL('static/media/about-page.png')} alt="About Blackboard"></Image>
+        <Image src={chrome.runtime.getURL('static/media/about-page.png')} alt="About Blackboard"></Image>
         <Box>
           <H1>👋 Hello there! Thanks for downloading Blackboard 💜</H1>
-          <H2>Use blackboard to annotate live webpages and take full length screenshots.</H2>
-          <H2>Features:</H2>
+          <H2>Use Blackboard to annotate live webpages and take full length screenshots.</H2>
+          <H2>🚀 Features:</H2>
           <UL>
             <li>✏️ Pencil tool</li>
             <li>📷 Full page screenshot</li>
@@ -113,8 +113,8 @@ const AboutPage = () => {
             <li>🖌️ Colour Picker</li>
             <li>🗑️ Reset</li>
           </UL>
-          <P>Stay tuned for more exciting features coming through!</P>
-          <H2>Quick tutorial:</H2>
+          <P>📌 Stay tuned for more exciting features coming through! 🎁</P>
+          <H2>📋 Quick tutorial:</H2>
           <P>If you like the tool please consider supporting the project. To donate just click on the Ko-fi button above ☝️ And do leave review on chrome webstore if you can :)</P>
           <P>🥑 Avo good day! </P>
         </Box>

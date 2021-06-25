@@ -1,6 +1,8 @@
+/*global chrome*/
 import React from 'react';
 import styled from 'styled-components';
 import Header from './components/Header/Header';
+import './assets/images/Ko-fi_Logo_RGB.png';
 
 const Screenshot = styled.div`
   padding-top: 90px;
@@ -16,6 +18,18 @@ const Image = styled.img`
   box-shadow: 0 0 15px 0 rgb(0 0 0 / 40%);
 `;
 
+const Footer = styled.footer`
+  padding: 10px;
+  margin: 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+`;
+
+const Support = styled.img`
+    width: 70px;
+  `;
+
 const CapturePage = (props) => {
 
   const handleSave = (datauri) => {
@@ -30,8 +44,14 @@ const CapturePage = (props) => {
     <div>
       <Header title={'Blackboard'} handleSave={() => {handleSave(props.image)}}></Header>
       <Screenshot>
+        <p>💡 For best results avoid scrolling the page when screenshot is being captured</p>
         <Image src={props.image} alt="Blackboard Screenshot"></Image>
       </Screenshot>
+      <Footer>
+        <p>👋 Like the tool? Please consider supporting the project on &nbsp;</p>
+        <Support src={chrome.runtime.getURL('static/media/Ko-fi_Logo_RGB.png')} onClick={() => window.open('https://ko-fi.com/ashrene', "_blank")}></Support>
+        <span>&nbsp; Good day ❤️</span>
+      </Footer>
     </div>
   );
 };
