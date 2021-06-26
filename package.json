@@ -1,6 +1,7 @@
 {
   "name": "blackboard",
   "version": "0.1.0",
+  "description": "Draw over webpages, capture and save full page screenshots",
   "private": true,
   "resolutions": {
     "glob-parent": "^6.0.0",
@@ -20,7 +21,6 @@
   },
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
-    "start": "node scripts/start.js",
     "build": "INLINE_RUNTIME_CHUNK=false node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "watch": "npm-watch"

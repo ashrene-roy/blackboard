@@ -2,6 +2,7 @@
   "short_name": "Blackboard",
   "name": "Blackboard",
   "version": "0.1.0",
+  "description": "Draw over webpages, capture and save full page screenshots",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"

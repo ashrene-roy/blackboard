@@ -37,7 +37,7 @@ const Tools = styled.div`
 		flex-wrap: wrap;
 		background-color: #000000;
 		align-items: center;
-		width: 490px;
+		width: 470px;
 	`;
 
 const CollapseButton = styled.button`
@@ -60,6 +60,8 @@ const Tool = styled.button`
 		padding-bottom: 0px;
 		margin-left: 5px;
 		margin-right: 5px;
+    height: 40px;
+		width: 40px;
 	`;
 
 const Icon = styled.img`
