@@ -50,7 +50,8 @@ const Canvas = () => {
   let originalFixedTopElements = new Set();
   let originalFixedBottomElements = new Set();
   let canvas = document.createElement('canvas');
-  let originalOverflow = document.body.style.overflow;
+  let originalBodyOverflowY = document.body.style.overflowY;
+  let originalHTMLOverflow = document.documentElement.style.overflow;
   let originalScroll = document.documentElement.style.scrollBehavior;
 
   const memoTextBoxEvent = React.useCallback((e) => {
@@ -254,8 +255,9 @@ const Canvas = () => {
     toolbox.style.display = 'flex';
     let app = document.getElementById('blackboard-canvas-1234');
     app.style.boxShadow = '0px 0px 0px 3px limegreen inset';
-    document.body.style.overflow = originalOverflow;
-    document.documentElement.style.scrollBehavior = originalScroll; 
+    document.body.style.overflowY = originalBodyOverflowY;
+    document.documentElement.style.overflow = originalHTMLOverflow;
+    document.documentElement.style.scrollBehavior = originalScroll;
   };
   
   const _getAllFixedElements = () => {
@@ -273,8 +275,7 @@ const Canvas = () => {
           elems[i].style.display = 'none';
           originalFixedBottomElements.add({style: originalStyleDisplay, element: elems[i]});
         }
-          
-      } 
+      }
     }
   };
 
@@ -283,8 +284,11 @@ const Canvas = () => {
     let app = document.getElementById('blackboard-canvas-1234');
     toolbox.style.display = 'none';
     app.style.boxShadow = 'none';
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.scrollBehavior = 'auto'; 
+    document.documentElement.style.scrollBehavior = 'auto';
+    if(window.getComputedStyle(document.body).getPropertyValue('overflow-y') !== 'overlay') {
+      document.body.style.overflowY = 'visible';
+      document.documentElement.style.overflow = 'hidden';
+    }
   };
 
   const handlePencilOption = (width) => {

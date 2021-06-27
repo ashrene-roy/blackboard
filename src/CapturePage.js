@@ -50,7 +50,7 @@ const CapturePage = (props) => {
       <Footer>
         <p>👋 Like the tool? Please consider supporting the project on &nbsp;</p>
         <Support src={chrome.runtime.getURL('static/media/Ko-fi_Logo_RGB.png')} onClick={() => window.open('https://ko-fi.com/ashrene', "_blank")}></Support>
-        <span>&nbsp; Good day ❤️</span>
+        <span>&nbsp; ❤️</span>
       </Footer>
     </div>
   );

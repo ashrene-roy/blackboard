@@ -138,11 +138,11 @@ const AboutPage = () => {
             <Tutorial src="https://i.imgur.com/VK0UaLl.png" title="source: imgur.com"/>
             <P>👉 Take screenshots by clicking on the camera button. Wait for the page to be scrolled till the end to capture the full length. Avoid manually scrolling or changing tabs while the tool is capturing the screen.</P>
             <Tutorial src="https://i.imgur.com/ZxNxJTv.gif" title="source: imgur.com"/>
-            <P>👉 Drag the text box anywhere. Dragging is enabled when Textbox(T) is deselected.</P>
+            <P>👉 Drag the text box anywhere. Dragging is enabled when Textbox(T) is not selected.</P>
             <Tutorial src="https://i.imgur.com/TQJ0jMx.gif" title="source: imgur.com"/>
             <P>👉 Resize by dragging bottom right corner. Resizing is enabled when Textbox(T) is selected.</P>
             <Tutorial src="https://i.imgur.com/b3G2ZxD.gif" title="source: imgur.com"/>
-            <ThankYou>If you like the tool please consider supporting the project. To donate just click on the Ko-fi button above ☝️ And do leave review on chrome webstore if you can :)</ThankYou>
+            <P>If you like the tool please consider supporting the project. To donate just click on the Ko-fi button above ☝️ And do leave review on chrome webstore if you can :)</P>
             <ThankYou>Have a good day! 🍔🍟</ThankYou>
           </Content>
         </Box>
