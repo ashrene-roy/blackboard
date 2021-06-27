@@ -29,7 +29,6 @@ chrome.runtime.onMessage.addListener(
       });
       break;
     default:
-      // helps debug when request message doesn't match
       console.log('Unmatched request of \'' + request + '\' from script to background.js from ' + sender);
     }
     return true;
