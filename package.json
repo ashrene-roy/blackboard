@@ -1,6 +1,6 @@
 {
   "name": "blackboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Draw over webpages, capture and save full page screenshots",
   "private": true,
   "resolutions": {
