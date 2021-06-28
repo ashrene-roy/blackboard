@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { TOOLBOX } from '../../constants/values';
+import { TOOLBOX, APP_TOOLBOX_ID } from '../../constants/values';
 import '../../assets/images/exit-white.svg';
 import '../../assets/images/pencil-black.svg';
 import '../../assets/images/eraser-black.svg';
@@ -140,7 +140,7 @@ const Toolbox = (props) => {
   };
 
   return (
-    <Container id="blackboard-canvas-1234-toolbox">
+    <Container id={APP_TOOLBOX_ID}>
       <Row>
         <CollapseButton onClick={handleCollapse}>{'>'}</CollapseButton>
         <Tools isCollapse={isCollapse}>

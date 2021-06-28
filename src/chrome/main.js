@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Canvas from '../Canvas';
+import { APP_ROOT_ID } from '../constants/values';
 
-const blackBoardApp = document.getElementById('blackboard-extension-root-1234');
+const blackBoardApp = document.getElementById(APP_ROOT_ID);
 if(blackBoardApp) {
   if(blackBoardApp.style.display === 'none') {
     blackBoardApp.style.display = 'block';
@@ -11,7 +12,7 @@ if(blackBoardApp) {
   }
 } else {
   const app = document.createElement('div');
-  app.id = "blackboard-extension-root-1234";
+  app.id = APP_ROOT_ID;
   document.body.appendChild(app);
   ReactDOM.render(<Canvas/>, app);
 }

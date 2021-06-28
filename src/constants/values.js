@@ -1,3 +1,7 @@
+export const APP_ROOT_ID = 'blackboard-extension-root-1234';
+export const APP_CANVAS_ID = 'blackboard-extension-canvas-1234';
+export const APP_TOOLBOX_ID = 'blackboard-extension-toolbox-1234';
+
 export const TOOLBOX = {
   DEFAULT: "NONE",
   PEN: "PEN",

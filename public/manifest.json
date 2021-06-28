@@ -1,13 +1,13 @@
 {
   "short_name": "Blackboard",
   "name": "Blackboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Draw over webpages, capture and save full page screenshots",
   "manifest_version": 3,
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": [ "activeTab", "tabs", "storage", "unlimitedStorage", "scripting"],
+  "permissions": [ "activeTab", "storage", "unlimitedStorage", "scripting"],
   "action": {
     "default_icon": "icon-48.png"
   },

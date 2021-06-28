@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import Toolbox from './components/Toolbox/Toolbox';
 import TextBox from './components/TextBox/TextBox';
-import { TOOLBOX, ACTIONS, DEFAULT_STROKE_WIDTH } from './constants/values';
+import { TOOLBOX, ACTIONS, DEFAULT_STROKE_WIDTH, APP_ROOT_ID, APP_CANVAS_ID, APP_TOOLBOX_ID } from './constants/values';
 import { DEFAULT_TOOL_COLOUR } from './constants/theme';
 
 const CanvasMain = styled.div`
@@ -195,7 +195,7 @@ const Canvas = () => {
 
   // Screenshot event
   const handleCapture = () => {
-    let app = document.getElementById('blackboard-canvas-1234');
+    let app = document.getElementById(APP_CANVAS_ID);
     let top = app.getBoundingClientRect().top + window.pageYOffset;
     let height = app.getBoundingClientRect().height;
     _prepare();
@@ -251,9 +251,9 @@ const Canvas = () => {
     for(let item of originalFixedBottomElements) { 
       item.element.style.display = item.style;
     }
-    let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
+    let toolbox = document.getElementById(APP_TOOLBOX_ID);
     toolbox.style.display = 'flex';
-    let app = document.getElementById('blackboard-canvas-1234');
+    let app = document.getElementById(APP_CANVAS_ID);
     app.style.boxShadow = '0px 0px 0px 3px limegreen inset';
     document.body.style.overflowY = originalBodyOverflowY;
     document.documentElement.style.overflow = originalHTMLOverflow;
@@ -280,8 +280,8 @@ const Canvas = () => {
   };
 
   const _prepare = () => {
-    let toolbox = document.getElementById('blackboard-canvas-1234-toolbox');
-    let app = document.getElementById('blackboard-canvas-1234');
+    let toolbox = document.getElementById(APP_TOOLBOX_ID);
+    let app = document.getElementById(APP_CANVAS_ID);
     toolbox.style.display = 'none';
     app.style.boxShadow = 'none';
     document.documentElement.style.scrollBehavior = 'auto';
@@ -350,14 +350,14 @@ const Canvas = () => {
   };
 
   const handleAppClose = () => {
-    const blackBoardApp = document.getElementById('blackboard-extension-root-1234');
+    const blackBoardApp = document.getElementById(APP_ROOT_ID);
     if(blackBoardApp) {
       blackBoardApp.parentNode.removeChild(blackBoardApp);
     }
   };
 
   return (
-    <CanvasMain id="blackboard-canvas-1234">
+    <CanvasMain id={APP_CANVAS_ID}>
       <Stage
         width={window.innerWidth}
         height={calculateHeight()}
