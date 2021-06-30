@@ -8,7 +8,6 @@
 
 <br />
 <img alt="logo" src="./resources/images/icon-512.png" height="200" />
-<br />
 
 ## Features
 -   ✏️ Pencil tool
@@ -22,12 +21,10 @@
 -   🗑️ Reset
 
 ## Screenshots
-<div style='display:inline;'>
-<img alt="demo" src="./resources/images/ss-1.png" height="280"/>
-<img alt="demo" src="./resources/images/ss-2.png" height="280"/>
-</div>
+<img alt="demo" src="./resources/images/ss-1.png" style='margin-bottom: 30px;width: 700px'/>
+<img alt="demo" src="./resources/images/ss-2.png" style='margin-bottom: 30px;width: 700px'/>
+<img alt="demo" src="./resources/images/demo-1.gif" style='margin-bottom: 30px;width: 700px'/>
 
-<img alt="demo" src="./resources/images/demo-1.gif" height="280"/>
 
 ## Installation
 Clone repo
