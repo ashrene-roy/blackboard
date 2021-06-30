@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "guptayash",
+      "name": "Yash Gupta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/21957571?v=4",
+      "profile": "https://www.linkedin.com/in/yash-gupta-aa2b6b148",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "blackboard",
+  "projectOwner": "AshreneRoy",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
