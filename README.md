@@ -1,13 +1,35 @@
 # Blackboard
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-Extension to annotate webpages as personal notes, save as bookmarks and share.
+## [Chrome extension](https://chrome.google.com/webstore/detail/blackboard/mjpaeljbciakgnigdligmdihfhnpbfla) to annotate webpages, capture and save full page screenshots 🚀
+
+<br />
+<img alt="logo" src="./resources/images/icon-512.png" height="200" />
+<br />
+
+## Features
+-   ✏️ Pencil tool
+-   📷 Full page screenshot
+-   ✨ Textbox
+-   🎚️ Size adjustor for drawing/writing
+-   ✨ Eraser tool
+-   🎨 Colour Palette
+-   🖌️ Colour Picker
+-   📥 Download screenshot
+-   🗑️ Reset
+
+## Screenshots
+<div style='display:inline;'>
+<img alt="demo" src="./resources/images/ss-1.png" height="280"/>
+<img alt="demo" src="./resources/images/ss-2.png" height="280"/>
+</div>
+
+<img alt="demo" src="./resources/images/demo-1.gif" height="280"/>
 
 ## Installation
->Make sure you have latest **NodeJs** version installed
-
 Clone repo
 
 ```
@@ -32,11 +54,18 @@ npm run watch
 
 which listens to any local file changes, and rebuilds automatically.
 
-## Adding Blackboard extension to Chrome
+## Building
+```
+npm run build
+```
 
+## Adding Blackboard extension to Chrome
 In Chrome browser, go to chrome://extensions page and switch on developer mode. This enables the ability to locally install a Chrome extension.
 
 Now click on the `LOAD UNPACKED` and browse to `blackboard/build` .This will install the Blackboard as a Chrome extension.
+
+## License
+MIT
 
 ## Contributors ✨
 
