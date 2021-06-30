@@ -21,4 +21,6 @@ yarn-debug.log*
 yarn-error.log*
 .history/
 
-/chrome-assets
+chrome-assets
+releases
+
