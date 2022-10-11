@@ -216,12 +216,14 @@ const Canvas = () => {
     
   };
 
+  let timeoutId = null;
 
   const capture = (j,n,screenshots,context) => {
     let isComplete = (j-n <= 1 && j-n >= 0) ? true : false;
     if (!isComplete) window.scrollTo({top: screenshots[j].scrollTo});
     _getAllFixedElements();
-    window.setTimeout(() => {
+    clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => {
       if(!isComplete) {
         chrome.runtime.sendMessage({message: 'capture_screenshot'}, (captured) => {
           let dY = window.scrollY;
@@ -241,7 +243,7 @@ const Canvas = () => {
           _cleanup();
         });
       }	
-    }, 150);
+    }, 500);
   };
 
   const _cleanup = () => {
