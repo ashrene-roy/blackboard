@@ -27,23 +27,23 @@
 
 
 ## Installation
-Clone repo
+* Clone repo
 
 ```
 git clone https://github.com/AshreneRoy/blackboard.git
 ```
-Go to `blackboard` directory run
+* Go to `blackboard` directory run
 
 ```
 npm install
 ```
-Now build the extension using
+* Now build the extension using
 ```
 npm run build
 ```
-You will see a `build` folder generated inside `blackboard`
+* You will see a `build` folder generated inside `blackboard`
 
-To avoid running `npm run build` after updating any file, you can run
+* To avoid running `npm run build` after updating any file, you can run
 
 ```
 npm run watch
